@@ -1,0 +1,83 @@
+
+  <h1 class="display-3">My Trainings</h1>
+
+<div class="row">
+  <div class="col-6">
+    <div class="form-inline">
+      <div class="form-group">
+        <div class="input-group mr-3">
+          <input type="text" class="form-control" placeholder="Search..." [formControl]="searchFormControl">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
+              x
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="float-right">
+      <ngb-pagination [collectionSize]="tableDataSource$.value.length" [pageSize]="pageSize$.value"
+        [page]="currentPage$.value" (pageChange)="currentPage$.next($event)">
+      </ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<table cdk-table [dataSource]="dataOnPage$" class="table table-hover">
+
+  <!--  Name Column -->
+  <ng-container cdkColumnDef="name">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('name')">
+      Training Name <span *ngIf="sortKey$.value === 'name'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.name}} </td>
+  </ng-container>
+
+  <!-- Provider Column -->
+  <ng-container cdkColumnDef="provider">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('provider')">
+      Provider <span *ngIf="sortKey$.value === 'provider'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.provider}} </td>
+  </ng-container>
+
+  <!-- Cluster Column -->
+  <ng-container cdkColumnDef="cluster">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('cluster')">
+      Cluster <span *ngIf="sortKey$.value === 'cluster'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.cluster}} </td>
+  </ng-container>
+
+  <!-- price Column -->
+  <ng-container cdkColumnDef="price">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('price')">
+      Price <span *ngIf="sortKey$.value === 'price'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
+  </ng-container>
+
+ <!-- Status Column -->
+ <ng-container cdkColumnDef="status">
+  <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('status')">
+    Status <span *ngIf="sortKey$.value === 'status'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+  </th>
+  <td cdk-cell *cdkCellDef="let row"
+      [ngClass]="{ 
+        'table-success': 'Pending Approval' === row.status,
+        'table-danger': superlatives$.value['lowest-health'] === row.name
+      }">
+    {{row.status}} </td>
+</ng-container>
+
+  <!-- Header and Row Declarations -->
+  <tr cdk-header-row *cdkHeaderRowDef="displayedColumns$.value"></tr>
+  <tr cdk-row *cdkRowDef="let row; columns: displayedColumns$.value"></tr>
+
+</table>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#trainingModal" (click)="addTrainingButtonClicked()">
+  Add training
+</button>

@@ -1,0 +1,80 @@
+
+
+  <h1 class="display-3">My Employee Trainings</h1>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="form-inline">
+        <div class="form-group">
+          <div class="input-group mr-3">
+            <input type="text" class="form-control" placeholder="Search..." [formControl]="searchFormControl">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
+                x
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="float-right">
+        <ngb-pagination [collectionSize]="tableDataSource$.value.length" [pageSize]="pageSize$.value"
+          [page]="currentPage$.value" (pageChange)="currentPage$.next($event)">
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+  
+  <table cdk-table [dataSource]="dataOnPage$" class="table table-hover">
+  
+    <!-- Hero Name Column -->
+    <ng-container cdkColumnDef="nameUser">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('nameUser')">
+        Hero Name <span *ngIf="sortKey$.value === 'nameUser'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.nameUser}} </td>
+    </ng-container>
+
+     <!-- Hero Name Column -->
+     <ng-container cdkColumnDef="nameTraining">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('nameTraining')">
+        Hero Name <span *ngIf="sortKey$.value === 'nameTraining'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.nameTraining}} </td>
+    </ng-container>
+  
+     <!-- Hero Name Column -->
+     <ng-container cdkColumnDef="trainingStatus">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('trainingStatus')">
+        Hero Name <span *ngIf="sortKey$.value === 'trainingStatus'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.trainingStatus}} </td>
+    </ng-container>
+
+      <!-- Level Up Column -->
+  <ng-container cdkColumnDef="onApprove">
+    <th cdk-header-cell *cdkHeaderCellDef></th>
+    <td cdk-cell *cdkCellDef="let row">
+      <button  class="btn btn-success" (click)="onApprove(row)">approve</button>
+    </td>
+  </ng-container>
+
+    <!-- Level Up Column -->
+    <ng-container cdkColumnDef="onDeny">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+        <button  class="btn btn-danger" (click)="onDeny(row)">Deny</button>
+      </td>
+    </ng-container>
+  
+   
+    <!-- Header and Row Declarations -->
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns$.value"></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns$.value"></tr>
+  
+  </table>
+  
+
+
+       

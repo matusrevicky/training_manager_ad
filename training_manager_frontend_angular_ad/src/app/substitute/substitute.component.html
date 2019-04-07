@@ -1,0 +1,55 @@
+
+
+  <h1 class="display-3">My Substitute</h1>
+  <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">name</th>
+          <th scope="col">cluster</th>
+          <th scope="col">provider</th>
+          <th scope="col">price</th>
+          <th scope="col">status</th>
+        </tr>
+      </thead>
+      <tbody>
+       
+        <tr *ngFor="let a of users"  (dblclick)="editUserClicked(a)">
+          <th scope="row">{{a.idUser}}</th>
+          <td>{{a.idSubstitute}}</td>
+          <td>{{a.provider}}</td>
+          <td>{{a.price}}</td>
+          <td>{{a.status}}</td>
+          <td><button  class="btn btn-danger" (click)="getSubstituesEmployees(a)">approve</button></td>
+          
+        </tr>
+      </tbody>
+    </table>
+  
+
+    <h1 class="display-3">My Employees Trainings</h1>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">BossName</th>
+            <th scope="col">TrainingName</th>
+            <th scope="col">TrainingStatus</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+          <tr *ngFor="let b of myEmployeeTrainings"  >
+            <th scope="row">{{b.idUser}}</th>
+            <td>{{b.nameUser}}</td>
+            <td>{{b.nameBoss}}</td>
+            <td>{{b.nameTraining}}</td>
+            <td>{{b.trainingStatus}}</td>
+            <td><button  class="btn btn-danger" (click)="onApprove(b)">approve</button><button  class="btn btn-danger" (click)="onDeny(b)">Deny</button></td>
+           
+            
+          </tr>
+         
+        </tbody>
+      </table>
+      <p *ngIf="selected">Selected: {{selected.nameUser}} {{selected.nameBoss}} {{selected.idCluster}}</p>
