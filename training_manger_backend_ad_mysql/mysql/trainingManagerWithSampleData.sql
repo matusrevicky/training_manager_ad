@@ -28,7 +28,7 @@ CREATE TABLE `clusters` (
   `idCluster` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idCluster`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `clusters` (
 
 LOCK TABLES `clusters` WRITE;
 /*!40000 ALTER TABLE `clusters` DISABLE KEYS */;
-INSERT INTO `clusters` VALUES (1,'Windows'),(2,'Linux');
+INSERT INTO `clusters` VALUES (1,'Windows'),(2,'Linux'),(3,'newcluster'),(4,'pol'),(5,'pol'),(6,'pol');
 /*!40000 ALTER TABLE `clusters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +52,7 @@ CREATE TABLE `providers` (
   `idProvider` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idProvider`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `providers` (
 
 LOCK TABLES `providers` WRITE;
 /*!40000 ALTER TABLE `providers` DISABLE KEYS */;
-INSERT INTO `providers` VALUES (1,'GOPAS');
+INSERT INTO `providers` VALUES (1,'GOPAS'),(2,'newProv'),(3,'newcluster'),(4,'newCluster'),(5,'zsfg');
 /*!40000 ALTER TABLE `providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +101,7 @@ CREATE TABLE `trainings` (
   `idTraining` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idTraining`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `trainings` (
 
 LOCK TABLES `trainings` WRITE;
 /*!40000 ALTER TABLE `trainings` DISABLE KEYS */;
-INSERT INTO `trainings` VALUES (1,'training1'),(2,'training2');
+INSERT INTO `trainings` VALUES (1,'training1'),(2,'training2'),(3,'training3'),(4,'training4'),(5,'training5'),(6,'training6'),(7,'tre'),(15,'java training'),(16,'prokusfsa'),(17,'testing'),(18,'posting'),(19,'popsaddsfdsfdsf');
 /*!40000 ALTER TABLE `trainings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +138,7 @@ CREATE TABLE `trainings_has_clusters` (
 
 LOCK TABLES `trainings_has_clusters` WRITE;
 /*!40000 ALTER TABLE `trainings_has_clusters` DISABLE KEYS */;
-INSERT INTO `trainings_has_clusters` VALUES (1,1),(2,2);
+INSERT INTO `trainings_has_clusters` VALUES (1,1),(3,1),(4,1),(6,1),(2,2),(5,2);
 /*!40000 ALTER TABLE `trainings_has_clusters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +167,7 @@ CREATE TABLE `trainings_has_providers` (
 
 LOCK TABLES `trainings_has_providers` WRITE;
 /*!40000 ALTER TABLE `trainings_has_providers` DISABLE KEYS */;
-INSERT INTO `trainings_has_providers` VALUES (1,1,150),(2,1,120);
+INSERT INTO `trainings_has_providers` VALUES (1,1,150),(2,1,120),(3,1,130),(4,1,14),(5,1,158),(6,1,245);
 /*!40000 ALTER TABLE `trainings_has_providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,8 +184,8 @@ CREATE TABLE `user_has_role` (
   PRIMARY KEY (`idUser`,`idRole`),
   KEY `fk_User_has_Role_Role1_idx` (`idRole`),
   KEY `fk_User_has_Role_User1_idx` (`idUser`),
-  CONSTRAINT `fk_User_has_Role_Role1` FOREIGN KEY (`idRole`) REFERENCES `roles` (`idRole`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_User_has_Role_User1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_User_has_Role_Role1` FOREIGN KEY (`idRole`) REFERENCES `roles` (`idrole`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_User_has_Role_User1` FOREIGN KEY (`idUser`) REFERENCES `users` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -195,7 +195,7 @@ CREATE TABLE `user_has_role` (
 
 LOCK TABLES `user_has_role` WRITE;
 /*!40000 ALTER TABLE `user_has_role` DISABLE KEYS */;
-INSERT INTO `user_has_role` VALUES (13,5),(14,6),(18,7),(15,8),(16,9),(17,10);
+INSERT INTO `user_has_role` VALUES (13,5),(19,5),(20,5),(14,6),(18,7),(15,8),(21,8),(16,9),(17,10);
 /*!40000 ALTER TABLE `user_has_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -212,8 +212,8 @@ CREATE TABLE `user_has_substitute` (
   PRIMARY KEY (`idUser`,`idSubstitute`),
   KEY `fk_Users_has_Users_Users2_idx` (`idSubstitute`),
   KEY `fk_Users_has_Users_Users1_idx` (`idUser`),
-  CONSTRAINT `fk_Users_has_Users_Users1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_Users_has_Users_Users2` FOREIGN KEY (`idSubstitute`) REFERENCES `users` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_Users_has_Users_Users1` FOREIGN KEY (`idUser`) REFERENCES `users` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_Users_has_Users_Users2` FOREIGN KEY (`idSubstitute`) REFERENCES `users` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -223,6 +223,7 @@ CREATE TABLE `user_has_substitute` (
 
 LOCK TABLES `user_has_substitute` WRITE;
 /*!40000 ALTER TABLE `user_has_substitute` DISABLE KEYS */;
+INSERT INTO `user_has_substitute` VALUES (19,20),(15,21);
 /*!40000 ALTER TABLE `user_has_substitute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,7 +239,7 @@ CREATE TABLE `user_has_training` (
   `idTraining` int(11) NOT NULL,
   `idProvider` int(11) NOT NULL,
   `idCluster` int(11) NOT NULL,
-  `trainingStatus` enum('pending approval') DEFAULT NULL,
+  `trainingStatus` enum('Pending Approval','Accepted by TL','Accepted by LM','Accepted by Director','Accepted by Procurement','Denied by TL','Denied by LM','Denied by Director','Denied by Procurement') DEFAULT NULL,
   PRIMARY KEY (`idUser`,`idTraining`,`idProvider`,`idCluster`),
   KEY `fk_User_has_Training_Training1_idx` (`idTraining`),
   KEY `fk_User_has_Training_User1_idx` (`idUser`),
@@ -257,6 +258,7 @@ CREATE TABLE `user_has_training` (
 
 LOCK TABLES `user_has_training` WRITE;
 /*!40000 ALTER TABLE `user_has_training` DISABLE KEYS */;
+INSERT INTO `user_has_training` VALUES (13,1,1,1,'Accepted by TL'),(13,2,1,2,'Accepted by TL'),(14,1,1,1,'Pending Approval'),(14,2,1,2,'Pending Approval'),(14,3,1,1,'Pending Approval'),(14,4,1,1,'Pending Approval'),(14,5,1,2,'Pending Approval'),(14,6,1,1,'Pending Approval'),(15,1,1,1,'Accepted by LM'),(15,2,1,2,'Accepted by LM'),(15,3,1,1,'Pending Approval'),(15,4,1,1,'Pending Approval'),(15,5,1,2,'Pending Approval'),(15,6,1,1,'Pending Approval'),(17,1,1,1,'Pending Approval'),(19,1,1,1,'Accepted by LM'),(19,2,1,2,'Accepted by LM'),(19,5,1,2,'Accepted by TL'),(20,1,1,1,'Accepted by TL'),(20,2,1,2,'Pending Approval'),(20,3,1,1,'Accepted by TL'),(20,4,1,1,'Pending Approval'),(20,5,1,2,'Pending Approval'),(20,6,1,1,'Pending Approval'),(21,1,1,1,'Pending Approval'),(21,3,1,1,'Pending Approval'),(21,5,1,2,'Pending Approval');
 /*!40000 ALTER TABLE `user_has_training` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,8 +280,8 @@ CREATE TABLE `users` (
   PRIMARY KEY (`idUser`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `fk_User_User1_idx` (`idBoss`),
-  CONSTRAINT `fk_User_User1` FOREIGN KEY (`idBoss`) REFERENCES `users` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_User_User1` FOREIGN KEY (`idBoss`) REFERENCES `users` (`iduser`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,7 +290,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (13,'user','user','user','user@user.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',15),(14,'admin','admin','admin','admin@admin.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',NULL),(15,'approver1','approver1','approver1','approver1@approver1.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',16),(16,'approver2','approver2','approver2','approver2@approver2.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',17),(17,'approver3','approver3','approver3','approver3@approver3.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',NULL),(18,'procurement','procurement','procurement','procurement@procurement.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',NULL);
+INSERT INTO `users` VALUES (13,'user','user','user','user@user.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',15),(14,'admin','admin','admin','admin@admin.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',NULL),(15,'approver1','approver1','approver1','approver1@approver1.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',16),(16,'approver2','approver2','approver2','approver2@approver2.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',17),(17,'approver3','approver3','approver3','approver3@approver3.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',18),(18,'procurement','procurement','procurement','procurement@procurement.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',NULL),(19,'user2','user2','user2','user2@user2.sk','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',15),(20,'user3','user3','user3','user3','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',21),(21,'approver1b','approver1b','approver1b','approver1b','$2a$10$mg4Y4EEp7l6DiBoOedhkAeMeYeqS/jxwuStaBl1sjiA9JUTr4QbPm',16);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -301,4 +303,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-11 21:16:54
+-- Dump completed on 2019-04-07 18:52:01

@@ -9,14 +9,16 @@
         <th scope="col">id</th>
         <th scope="col">name</th>
         <th scope="col">lastname</th>
+        <th scope="col">manager</th>
       </tr>
     </thead>
     <tbody>
      
       <tr *ngFor="let user of users" (click)="selectAgent(a)" (dblclick)="editUserClicked(a)">
-        <th scope="row">{{user.idUser}}</th>
-        <td>{{user.firstname}}</td>
-        <td>{{user.lastname}}</td>
+        <th scope="row">{{user.employeeID}}</th>
+        <td>{{user.givenName}}</td>
+        <td>{{user.sn}}</td>
+        <td>{{user.manager}}</td>
        
         <td><button class="btn btn-danger" (click)="deleteUser(a)">X</button></td>
       </tr>
