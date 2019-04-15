@@ -30,7 +30,7 @@ export class TrainingsComponent implements OnInit {
         'onSubmit'
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
-    pageSize$ = new BehaviorSubject<number>(5);
+    pageSize$ = new BehaviorSubject<number>(25);
     dataOnPage$ = new BehaviorSubject<any[]>([]);
     searchFormControl = new FormControl();
     sortKey$ = new BehaviorSubject<string>('name');
@@ -143,9 +143,13 @@ export class TrainingsComponent implements OnInit {
         this.sortDirection$.next('asc');
     }
 
+    onChangePageSize(value) {
+      this.pageSize$.next(value);
+    }
+
     getAllTrainings() {
 
-        this.trainigService.getAllTrainings(this.currentUser.idUser).pipe(first()).subscribe(tr => {
+        this.trainigService.getAllTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
             this.trainings$.next(tr);
         });
 
@@ -156,109 +160,11 @@ export class TrainingsComponent implements OnInit {
     }
 
     onSubmit(training: Training) {
-        this.trainigService.bindUserWithTraining(training, this.currentUser.idUser).subscribe(ok => {
+        this.trainigService.bindUserWithTraining(training, this.currentUser.extensionAttribute1).subscribe(ok => {
             this.getAllTrainings();
             this.saved = true;
             setTimeout(_ => this.saved = false, 5000);
         });;
     }
-
-    onApprove(training: Training) {
-        this.trainigService.acceptUserTraining(training, this.currentUser.idUser, this.currentUser.role).subscribe(ok => {
-            this.saved = true;
-            setTimeout(_ => this.saved = false, 5000);
-        });;
-
-    }
-
-    selectAgent(training: Training): void {
-        this.selected = training;
-    }
-
-    // save training
-    private action = 'add';
-    private editedTraining = new Training();
-    private status = 'ok';
-
-    editedTrainingSaved(training: Training) {
-        if (this.action == 'add') {
-          this.trainigService.saveTraining(training).subscribe( ok => {
-            this.getAllTrainings();
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        } else {
-            this.trainigService.saveTraining(training).subscribe( ok => {
-                this.getAllTrainings();
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        }
-      }
-    
-      addTrainingButtonClicked(){
-        this.action = 'add';
-        this.editedTraining = new Training();
-      }
-    
-      editTrainingClicked(training:Training){
-        this.action = 'edit';
-        this.editedTraining = JSON.parse(JSON.stringify(training));
-        $('#trainingModal').modal('show');
-      }
-
-      addProviderButtonClicked(){
-        this.action = 'add';
-        this.editedTraining = new Training();
-      }
-
-      editedProviderSaved(training: Training) {
-        if (this.action == 'add') {
-          this.trainigService.saveProvider(training).subscribe( ok => {
-           
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        } else {
-            this.trainigService.saveProvider(training).subscribe( ok => {
-               
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        }
-      }
-
-      addClusterButtonClicked(){
-        this.action = 'add';
-        this.editedTraining = new Training();
-      }
-
-      editedClusterSaved(training: Training) {
-        if (this.action == 'add') {
-          this.trainigService.saveCluster(training).subscribe( ok => {
-           
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        } else {
-            this.trainigService.saveCluster(training).subscribe( ok => {
-               
-          },
-          errorMsg => {
-            this.status = 'error'; 
-            console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
-          });      
-        }
-      }
    
 }

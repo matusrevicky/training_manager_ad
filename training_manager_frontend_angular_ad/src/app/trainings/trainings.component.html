@@ -20,6 +20,19 @@
       <ngb-pagination [collectionSize]="tableDataSource$.value.length" [pageSize]="pageSize$.value"
         [page]="currentPage$.value" (pageChange)="currentPage$.next($event)">
       </ngb-pagination>
+
+      <div class="form-group">
+          <label for="sel1">Items per page</label>
+          <select class="form-control" id="sel1">
+              <option (click)="onChangePageSize(10)" value="10" >10</option>
+              <option (click)="onChangePageSize(25)" selected="selected" value="25">25</option>
+              <option (click)="onChangePageSize(50)" value="50">50</option>
+              <option (click)="onChangePageSize(100)" value="100">100</option>
+              <option (click)="onChangePageSize(500)" value="500">500</option>
+          </select>
+        </div> 
+
+
     </div>
   </div>
 </div>
@@ -72,26 +85,3 @@
 
 </table>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#trainingModal"
-  (click)="addTrainingButtonClicked()">
-  Add training
-</button>
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#providerModal"
-  (click)="addProviderButtonClicked()">
-  Add Provider
-</button>
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clusterModal"
-  (click)="addClusterButtonClicked()">
-  Add Cluster
-</button>
-
-<app-training-modal (savedTraining)="editedTrainingSaved($event)" [training]="editedTraining"
-  [actionWithTraining]="action"></app-training-modal>
-
-<app-provider-modal (savedTraining)="editedProviderSaved($event)" [training]="editedTraining"
-  [actionWithTraining]="action"></app-provider-modal>
-
-<app-cluster-modal (savedTraining)="editedClusterSaved($event)" [training]="editedTraining"
-  [actionWithTraining]="action"></app-cluster-modal>

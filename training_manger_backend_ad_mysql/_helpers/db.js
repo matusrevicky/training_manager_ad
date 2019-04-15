@@ -1,15 +1,9 @@
+// check documentation https://www.npmjs.com/package/mysql
+
 const mysql = require('mysql');
+const config = require("config.json");
 
-
-var mysqlConnection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-   // database: 'role_based_login',
-   database: 'training_managment',
-    multipleStatements: true
-});
-
+var mysqlConnection = mysql.createConnection(config.mysql_config);
 
 mysqlConnection.connect((err) => {
     if (!err)
@@ -17,7 +11,6 @@ mysqlConnection.connect((err) => {
     else
         console.log('DB connection failed \n Error : ' + JSON.stringify(err, undefined, 2));
 });
-
 
 
 module.exports = mysqlConnection;

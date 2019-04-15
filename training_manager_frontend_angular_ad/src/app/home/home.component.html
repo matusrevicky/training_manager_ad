@@ -5,6 +5,19 @@
 <div>
     Current user from secure api end point:
     <ul>
-        <li *ngIf="userFromApi">{{userFromApi.firstname}} {{userFromApi.lastname}}</li>
+        <li > {{userFromApi.dn}}</li>
+        <li > {{userFromApi.distinguishedName}}</li>
+        <li > {{userFromApi.sAMAccountName}}</li>
+        <li > {{userFromApi.whenCreated}}</li>
+        <li > {{userFromApi.pwdLastSet}}</li>
+        <li > {{userFromApi.userAccountControl}}</li>
+        <li > {{userFromApi.employeeID}}</li>
+        <li > {{userFromApi.sn}}</li>
+        <li > {{userFromApi.givenName}}</li>
+        <li > {{userFromApi.cn}}</li>
+        <li > {{userFromApi.displayName}}</li>
+        <li > {{userFromApi.description}}</li>
+        <li > {{userFromApi.manager}}</li>
+        <li > {{userFromApi.extensionAttribute1}}</li>
     </ul>
 </div>

@@ -20,4 +20,5 @@ export class User {
     userAccountControl: number;
     distinguishedName: string;
     manager: string;
+    extensionAttribute1 : number;
 }

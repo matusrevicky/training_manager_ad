@@ -14,6 +14,8 @@ import { HomeComponent } from './home';
 import { AdminComponent } from './admin';
 import { LoginComponent } from './login';
 import { TrainingsComponent } from './trainings';
+import { ManageTrainingsComponent } from './manageTrainings';
+
 import { TrainingModalComponent } from './training-modal';
 import { ProviderModalComponent } from './provider-modal';
 import { ClusterModalComponent } from './cluster-modal';
@@ -45,6 +47,7 @@ import { FormsModule } from '@angular/forms';
         AdminComponent,
         LoginComponent,
         TrainingsComponent,
+        ManageTrainingsComponent,
         TrainingModalComponent,
         ProviderModalComponent,
         ClusterModalComponent,

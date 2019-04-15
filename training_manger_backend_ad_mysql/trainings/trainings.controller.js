@@ -13,11 +13,13 @@ router.get('/employeeTrainings/:id', getEmployeeTrainings);
 router.post('/bindwithuser/:id', authorize(), bindUserWithTraining);
 router.post('/acceptUserTraining/:id/:role', authorize(), acceptUserTraining);
 router.post('/denyUserTraining/:id/:role', authorize(), denyUserTraining);
-//router.get('/:id',authorize([Role.Admin]),  getTrainingById);
 router.post('/',authorize(), createTraining);
 router.post('/provider', authorize(), createProvider);
 router.post('/cluster', authorize(), createCluster);
 router.get('/cluster/clusters', getClusters);
+router.get('/provider/providers', getProviders);
+router.get('/training/trainings', getTrainings);  
+router.post('/wholeTraining', saveWholeTraining);
 
 module.exports = router;
 
@@ -34,19 +36,6 @@ function denyUserTraining(req, res, next) {
 
     var values = [idCurrentUser, idUser, idProvider, idCluster, idTraining];
 
-    if (roleCurrentUser == Role.Approver1 && status == Approvals.Pending && roleWhom == Role.User) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Denied by TL' WHEN r.role = 'Approver2' THEN 'Denied by LM' WHEN r.role = 'Approver3' THEN 'Denied by Director' WHEN r.role = 'Procurement' THEN 'Denied by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;         "
-    }
-    else if (roleCurrentUser == Role.Approver2 && ((roleWhom == Role.User && status == Approvals.Accepted1) || (roleWhom == Role.Approver1 && status == Approvals.Pending))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Denied by TL' WHEN r.role = 'Approver2' THEN 'Denied by LM' WHEN r.role = 'Approver3' THEN 'Denied by Director' WHEN r.role = 'Procurement' THEN 'Denied by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;         "
-    }
-    else if (roleCurrentUser == Role.Approver3 && ((roleWhom == Role.User && status == Approvals.Accepted2) || (roleWhom == Role.Approver1 && status == Approvals.Accepted2) || (roleWhom == Role.Approver2 && status == Approvals.Pending))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Denied by TL' WHEN r.role = 'Approver2' THEN 'Denied by LM' WHEN r.role = 'Approver3' THEN 'Denied by Director' WHEN r.role = 'Procurement' THEN 'Denied by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;         "
-    }
-    else if (roleCurrentUser == Role.Procurement && ((roleWhom == Role.User && status == Approvals.Accepted3) || (roleWhom == Role.Approver1 && status == Approvals.Accepted3) || (roleWhom == Role.Approver2 && status == Approvals.Accepted3))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Denied by TL' WHEN r.role = 'Approver2' THEN 'Denied by LM' WHEN r.role = 'Approver3' THEN 'Denied by Director' WHEN r.role = 'Procurement' THEN 'Denied by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;         "
-    }
-
     db.query(sql, values, (err, rows, fields) => {
         if (!err)
             res.send(rows);
@@ -57,8 +46,6 @@ function denyUserTraining(req, res, next) {
     console.log(idProvider + ' ' + idCluster + ' ' + idTraining + ' ' + idCurrentUser);
 
 }
-
-
 
 
 function acceptUserTraining(req, res, next) {
@@ -76,27 +63,12 @@ function acceptUserTraining(req, res, next) {
 
     var values = [idCurrentUser, idUser, idProvider, idCluster, idTraining];
 
-    if (roleCurrentUser == Role.Approver1 && status == Approvals.Pending && roleWhom == Role.User) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Accepted by TL' WHEN r.role = 'Approver2' THEN 'Accepted by LM' WHEN r.role = 'Approver3' THEN 'Accepted by Director' WHEN r.role = 'Procurement' THEN 'Accepted by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;"
-    }
-    else if (roleCurrentUser == Role.Approver2 && ((roleWhom == Role.User && status == Approvals.Accepted1) || (roleWhom == Role.Approver1 && status == Approvals.Pending))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Accepted by TL' WHEN r.role = 'Approver2' THEN 'Accepted by LM' WHEN r.role = 'Approver3' THEN 'Accepted by Director' WHEN r.role = 'Procurement' THEN 'Accepted by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;"
-    }
-    else if (roleCurrentUser == Role.Approver3 && ((roleWhom == Role.User && status == Approvals.Accepted2) || (roleWhom == Role.Approver1 && status == Approvals.Accepted2) || (roleWhom == Role.Approver2 && status == Approvals.Pending))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Accepted by TL' WHEN r.role = 'Approver2' THEN 'Accepted by LM' WHEN r.role = 'Approver3' THEN 'Accepted by Director' WHEN r.role = 'Procurement' THEN 'Accepted by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;"
-    }
-    else if (roleCurrentUser == Role.Procurement && ((roleWhom == Role.User && status == Approvals.Accepted3) || (roleWhom == Role.Approver1 && status == Approvals.Accepted3) || (roleWhom == Role.Approver2 && status == Approvals.Accepted3))) {
-        var sql = "update user_has_training ut set ut.trainingStatus = (SELECT CASE WHEN r.role = 'Approver1' THEN 'Accepted by TL' WHEN r.role = 'Approver2' THEN 'Accepted by LM' WHEN r.role = 'Approver3' THEN 'Accepted by Director' WHEN r.role = 'Procurement' THEN 'Accepted by Procurement' ELSE 'error' END FROM user_has_role ur JOIN roles r ON (r.idRole = ur.idRole) WHERE idUser = ?) where ut.idUser=? and ut.idProvider=? and ut.idCluster=? and ut.idTraining=?;"
-    }
-
     db.query(sql, values, (err, rows, fields) => {
         if (!err)
             res.send(rows);
         else
             console.log(err);
     })
-
-
 
 }
 
@@ -135,7 +107,9 @@ function getAllTrainings(req, res, next) {
 // returns list of my trainings (current user id)
 function getMyTrainings(req, res, next) {
     var idCurrentUser = parseInt(req.params.id);
-    db.query('select t.name name, u.idUser, u.firstName, u.lastName, p.name provider, c.name cluster, ut.trainingStatus as status, tp.price  from user_has_training ut join providers p on(ut.idProvider = p.idProvider) join clusters c on (c.idCluster = ut.idCluster ) join trainings t on (t.idTraining = ut.idTraining) join users u on (ut.idUser = u.idUser) join trainings_has_providers tp on (tp.idProvider = ut.idProvider and tp.idTraining = ut.idTraining ) where u.idUser = ?;    ', idCurrentUser, (err, rows, fields) => {
+    var sql = 'select t.name name, p.name provider, c.name cluster, ut.trainingStatus as status, tp.price  from user_has_training ut join providers p on(ut.idProvider = p.idProvider) join clusters c on (c.idCluster = ut.idCluster ) join trainings t on (t.idTraining = ut.idTraining)  join trainings_has_providers tp on (tp.idProvider = ut.idProvider and tp.idTraining = ut.idTraining ) where ut.idUser = ?;';
+
+    db.query(sql , idCurrentUser, (err, rows, fields) => {
         if (!err)
             res.send(rows);
         else
@@ -195,16 +169,68 @@ function createCluster(req, res, next) {
 
 function getClusters(req, res, next) {
     var sql = 'select idCluster, name from clusters;';
-   
-
     db.query(sql, (err, rows, fields) => {
         if (!err)
             res.send(rows);
         else
             console.log(err);
     })
+}
+
+function getProviders(req, res, next) {
+    var sql = 'select idProvider, name from providers;';
+   
+    db.query(sql, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+}
+
+function getTrainings(req, res, next) {
+    var sql = 'select idTraining, name from trainings;';
+   
+    db.query(sql, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+}
+
+
+function saveWholeTraining(req, res, next) {
+    var price = req.body.price;
+    var idCluster = req.body.cluster.idCluster;
+    var idProvider = req.body.provider.idProvider;
+    var idTraining = req.body.training.idTraining;
+    var values1 = [[idTraining, idCluster]];
+    var values2 = [[idTraining,idProvider,price]];
+
+    var sql1 = "INSERT INTO trainings_has_clusters(idTraining, idCluster) VALUES(?)";
+    db.query(sql1, values1 , (err, rows, fields) => {
+        if (!err){
+            var sql2 = "INSERT INTO trainings_has_providers(idTraining,idProvider,price) VALUES(?)";
+            db.query(sql2, values2, (err, rows, fields) => {
+                if (!err){
+                    res.send(rows);
+                }
+                else{
+                    console.log(err);
+                }
+            });
+        }  
+        else{
+            console.log(err);
+        }
+    });
+
+    
 
 }
+
+
 /*
 function getTrainingById(req, res, next) {
     const currentTraining = req.training;

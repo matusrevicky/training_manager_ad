@@ -42,7 +42,8 @@ export class ClusterModalComponent implements OnChanges {
 
   onSubmit() {
     this.savedTraining.emit(this.training);
-    $('#trainingModal').modal('hide');
+    $('#clusterModal').modal('hide');
+    
   }
   
    

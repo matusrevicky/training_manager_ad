@@ -10,6 +10,7 @@ import { MyTrainingsComponent } from './myTrainings';
 import { MyEmployeesTrainingsComponent } from './myEmployeesTrainings';
 import { SubstituteComponent } from './substitute';
 import { TableComponent } from './table/table.component';
+import { ManageTrainingsComponent } from './manageTrainings';
 
 const appRoutes: Routes = [
     {
@@ -26,6 +27,12 @@ const appRoutes: Routes = [
     {
         path: 'trainings',
         component: TrainingsComponent,
+        canActivate: [AuthGuard],
+       
+    },
+    {
+        path: 'manageTrainings',
+        component: ManageTrainingsComponent,
         canActivate: [AuthGuard],
        
     },

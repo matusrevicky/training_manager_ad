@@ -143,8 +143,12 @@ export class MyTrainingsComponent implements OnInit {
         this.sortDirection$.next('asc');
     }
 
+    onChangePageSize(value) {
+        this.pageSize$.next(value);
+      }
+
     getMyTrainings() {
-        this.trainigService.getMyTrainings(this.currentUser.idUser).pipe(first()).subscribe(tr => {
+        this.trainigService.getMyTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
             this.trainings$.next(tr);
         });
     }

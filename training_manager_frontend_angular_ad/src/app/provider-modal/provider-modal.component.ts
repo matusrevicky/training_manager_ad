@@ -31,17 +31,10 @@ export class ProviderModalComponent implements OnChanges {
     }
   }
 
- /* getWorkshops() {
-    this.restService.getBicycleCategory().subscribe(w => {
-      
-      this.workshops = w;
-      this.user.category = this.workshops[this.user.category.id-1];
-    });
-  }*/
 
   onSubmit() {
     this.savedTraining.emit(this.training);
-    $('#trainingModal').modal('hide');
+    $('#providerModal').modal('hide');
   }
   
    
