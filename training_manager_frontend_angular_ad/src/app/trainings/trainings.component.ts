@@ -11,6 +11,7 @@ import { take } from 'rxjs/operators';
 
 import { FormControl } from '@angular/forms';
 import { MyTrainingsComponent } from '@/myTrainings';
+import {ExcelService} from '../_services/excel.service';
 declare var $:any;
 
 @Component({ templateUrl: 'trainings.component.html' })
@@ -37,7 +38,7 @@ export class TrainingsComponent implements OnInit {
     sortDirection$ = new BehaviorSubject<string>('asc');
 
 
-  //  trainings: Training[] = [];
+   trainings: Training[] = [];
 
     private training: Training;
     private selected: Training;
@@ -45,7 +46,7 @@ export class TrainingsComponent implements OnInit {
     private saved: boolean;
     
 
-    constructor(private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
+    constructor(private excelService:ExcelService, private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
 
     ngOnInit() {
 
@@ -166,5 +167,14 @@ export class TrainingsComponent implements OnInit {
             setTimeout(_ => this.saved = false, 5000);
         });;
     }
+
+    // export to excel
+    exportAsXLSX():void {
+        
+        this.trainings$.subscribe(changedTrainingData => {
+           this.trainings = changedTrainingData;
+            });
+        this.excelService.exportAsExcelFile(this.trainings, 'sample');
+      }
    
 }

@@ -21,6 +21,10 @@
         [page]="currentPage$.value" (pageChange)="currentPage$.next($event)">
       </ngb-pagination>
 
+
+     
+      <button  class="btn btn-primary" (click)="exportAsXLSX()">Extort to excel</button>
+
       <div class="form-group">
           <label for="sel1">Items per page</label>
           <select class="form-control" id="sel1">

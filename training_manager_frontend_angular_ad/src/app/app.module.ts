@@ -28,6 +28,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { TableComponent } from './table/table.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import { ExcelService } from './_services/excel.service';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import { FormsModule } from '@angular/forms';
 
         // provider used to create fake backend
         // fakeBackendProvider
+        ExcelService
     ],
     bootstrap: [AppComponent]
 })

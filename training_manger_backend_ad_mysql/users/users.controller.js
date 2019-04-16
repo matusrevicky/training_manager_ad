@@ -122,6 +122,7 @@ function getBysAMAccountName(sAMAccountName) {
   });
 }
 
+//check this https://forums.asp.net/t/1716111.aspx?query+AD+to+get+all+Employees+of+a+manager+
 function getMyDirectSubordinates(req, res, next) {
   res.send(getMyDirectSubordinates());
 }

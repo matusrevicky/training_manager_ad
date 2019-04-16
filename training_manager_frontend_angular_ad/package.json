@@ -21,8 +21,10 @@
     "@angular/router": "^7.2.8",
     "@ng-bootstrap/ng-bootstrap": "^4.1.0",
     "core-js": "^2.5.7",
+    "file-saver": "^2.0.1",
     "logger": "0.0.1",
     "rxjs": "^6.4.0",
+    "xlsx": "^0.14.2",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
