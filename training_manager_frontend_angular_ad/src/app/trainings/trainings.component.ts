@@ -17,7 +17,7 @@ declare var $:any;
 @Component({ templateUrl: 'trainings.component.html' })
 export class TrainingsComponent implements OnInit {
 
-
+  
   
     trainings$ = new BehaviorSubject([]);
 
@@ -168,7 +168,7 @@ export class TrainingsComponent implements OnInit {
         });;
     }
 
-    // export to excel
+    // export to excel  // https://stackblitz.com/edit/angular6-export-xlsx?file=src%2Fapp%2Fapp.module.ts
     exportAsXLSX():void {
         
         this.trainings$.subscribe(changedTrainingData => {

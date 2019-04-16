@@ -92,7 +92,7 @@ function bindUserWithTraining(req, res, next) {
 }
 
 function getAllTrainings(req, res, next) {
-    var sql = 'SELECT case when t.idTraining in (select idTraining from user_has_training where idUser = ?)  then 1 else 0 end as isMy, t.idTraining, t.name, c.name as clustername, tp.Price as price, p.name as providername, tp.idProvider, tc.idCluster from trainings t join trainings_has_clusters tc on(t.idTraining = tc.idTraining) join clusters c on(c.idCluster = tc.idCluster) join trainings_has_providers tp on (t.idTraining = tp.idTraining) join providers p on (p.idProvider = tp.idProvider);';
+    var sql = 'select case when t.idTraining in (select idTraining from user_has_training where idUser = ? )  then 1 else 0 end as isMy, wt.idTraining, t.name, c.name as clustername, wt.Price as price, p.name as providername, wt.idProvider, wt.idCluster from WholeTraining wt join providers p on (p.idProvider = wt.idProvider) join trainings t on (t.idTraining = wt.idTraining) join clusters c on (c.idCluster = wt.idCluster);';
     var idCurrentUser = parseInt(req.params.id);
 
     db.query(sql, idCurrentUser, (err, rows, fields) => {
@@ -107,7 +107,7 @@ function getAllTrainings(req, res, next) {
 // returns list of my trainings (current user id)
 function getMyTrainings(req, res, next) {
     var idCurrentUser = parseInt(req.params.id);
-    var sql = 'select t.name name, p.name provider, c.name cluster, ut.trainingStatus as status, tp.price  from user_has_training ut join providers p on(ut.idProvider = p.idProvider) join clusters c on (c.idCluster = ut.idCluster ) join trainings t on (t.idTraining = ut.idTraining)  join trainings_has_providers tp on (tp.idProvider = ut.idProvider and tp.idTraining = ut.idTraining ) where ut.idUser = ?;';
+    var sql = 'select t.name name, p.name provider, c.name cluster, ut.trainingStatus as status, wt.price  from user_has_training ut join providers p on(ut.idProvider = p.idProvider) join clusters c on (c.idCluster = ut.idCluster ) join trainings t on (t.idTraining = ut.idTraining)  join wholetraining wt on (wt.idProvider = ut.idProvider and wt.idTraining = ut.idTraining and wt.idCluster = ut.idCluster ) where ut.idUser = ?;';
 
     db.query(sql , idCurrentUser, (err, rows, fields) => {
         if (!err)
@@ -121,8 +121,8 @@ function getMyTrainings(req, res, next) {
 
 // returns list of my trainings (current user id)
 function getEmployeeTrainings(req, res, next) {
-    var idCurrentUser = parseInt(req.params.id);
-    var gen = parseInt(req.params.gen);;
+    var idCurrentUser = parseInt(req.params.extensionAttribute1);
+    
     var sql = "WITH RECURSIVE PotomokPredok(potomokId, predokId, generacia) AS(SELECT Dieta.idUser, Rodic.idUser, 1 FROM Users AS Dieta JOIN Users AS Rodic ON Rodic.idUser IN(Dieta.idBoss) UNION ALL SELECT Dieta.idUser, Predok.predokId, generacia + 1 FROM PotomokPredok AS Predok JOIN Users AS Dieta ON Predok.potomokId IN(Dieta.idBoss)) select  pp.potomokId idUser, u.username nameUser,r.role, u2.username nameBoss, ut.idTraining, ut.trainingStatus, t.name nameTraining, ut.idProvider, ut.idCluster from PotomokPredok pp join users u on(u.idUser = pp.potomokId) join users u2 on(u2.idUser = pp.predokId) join user_has_training ut on(pp.potomokId = ut.idUser) join trainings t on(t.idTraining = ut.idTraining) join user_has_role ur on(u.idUser = ur.IdUser ) join roles r on(r.IdRole=ur.idRole) where  pp.predokId = ? order by pp.potomokid;"
 
     db.query(sql, [idCurrentUser], (err, rows, fields) => {
@@ -205,21 +205,12 @@ function saveWholeTraining(req, res, next) {
     var idCluster = req.body.cluster.idCluster;
     var idProvider = req.body.provider.idProvider;
     var idTraining = req.body.training.idTraining;
-    var values1 = [[idTraining, idCluster]];
-    var values2 = [[idTraining,idProvider,price]];
+    var values1 = [[idProvider, idTraining, idCluster, price]];
 
-    var sql1 = "INSERT INTO trainings_has_clusters(idTraining, idCluster) VALUES(?)";
+    var sql1 = "INSERT INTO WholeTraining(idProvider,idTraining, idCluster, Price) VALUES(?)";
     db.query(sql1, values1 , (err, rows, fields) => {
         if (!err){
-            var sql2 = "INSERT INTO trainings_has_providers(idTraining,idProvider,price) VALUES(?)";
-            db.query(sql2, values2, (err, rows, fields) => {
-                if (!err){
-                    res.send(rows);
-                }
-                else{
-                    console.log(err);
-                }
-            });
+            res.send(rows);
         }  
         else{
             console.log(err);

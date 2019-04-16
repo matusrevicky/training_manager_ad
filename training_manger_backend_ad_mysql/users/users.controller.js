@@ -13,6 +13,7 @@ var _ = require('underscore');
 router.post('/authenticate', authenticate);     // public route
 router.get('/', authorize(), getAll);     // all authenticated users
 router.get('/:id', authorize(), getByextensionAttribute1);    // all authenticated users
+router.get('/myEmployees/emp', getMyDirectSubordinates);    // all authenticated users
 
 module.exports = router;
 
@@ -124,9 +125,21 @@ function getBysAMAccountName(sAMAccountName) {
 
 //check this https://forums.asp.net/t/1716111.aspx?query+AD+to+get+all+Employees+of+a+manager+
 function getMyDirectSubordinates(req, res, next) {
-  res.send(getMyDirectSubordinates());
+
+  var query = "(&(objectClass=user)(objectCategory=person)(manager=CN=Kondas Jaroslav,OU=DieboldUsers,DC=dn,DC=exmpl))" ;
+  ad.find(query, function (err, results) {
+    if ((err) || (!results)) {
+      // console.log('ERROR: ' + JSON.stringify(err));
+      res.send(err);
+      return;
+    } else {
+      console.log(results.users);
+      res.send(results.users);
+    }
+  });
 }
 
+/*
 function getMyDirectSubordinates() {
   //moji priamy podriadeny    
 
@@ -146,7 +159,7 @@ function getMyDirectSubordinates() {
       return users;
     }
   });
-}
+}*/
 
 function getMyAllSubordinates(req, res, next) {
   res.send(getMyAllSubordinates);
