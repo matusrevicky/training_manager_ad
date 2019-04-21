@@ -8,7 +8,7 @@ export class User {
     lastName?: string;
     email?: string;
     idBoss?: number;
-    role?: Role;
+    role?: number;
     token?: string;
 
     cn: string;

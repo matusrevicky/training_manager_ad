@@ -23,15 +23,16 @@
       </ngb-pagination>
 
       <div class="form-group">
-          <label for="sel1">Items per page</label>
-          <select class="form-control" id="sel1">
-              <option (click)="onChangePageSize(10)" value="10" >10</option>
-              <option (click)="onChangePageSize(25)" selected="selected" value="25">25</option>
-              <option (click)="onChangePageSize(50)" value="50">50</option>
-              <option (click)="onChangePageSize(100)" value="100">100</option>
-              <option (click)="onChangePageSize(500)" value="500">500</option>
-          </select>
-        </div> 
+        <label for="sel1">Items per page</label>
+        <select class="form-control" id="sel1">
+            <option (click)="onChangePageSize(10)" value="10" >10</option>
+            <option (click)="onChangePageSize(25)"  value="25">25</option>
+            <option (click)="onChangePageSize(50)" value="50">50</option>
+            <option (click)="onChangePageSize(100)" value="100">100</option>
+            <option (click)="onChangePageSize(500)" value="500">500</option>
+            <option (click)="onChangePageSize(500)" selected="selected" value="1000">1000</option>
+        </select>
+      </div> 
 
 
     </div>

@@ -13,18 +13,19 @@ var _ = require('underscore');
 router.post('/authenticate', authenticate);     // public route
 router.get('/', authorize(), getAll);     // all authenticated users
 router.get('/:id', authorize(), getByextensionAttribute1);    // all authenticated users
-router.get('/myEmployees/emp', getMyDirectSubordinates);    // all authenticated users
+router.get('/myEmployees/emp', getMyDirectSubordinates);    // all authenticated users  getMyRole
+
 
 module.exports = router;
 
 
 // http://www.expertphp.in/article/user-login-and-registration-using-nodejs-and-mysql-with-example
-function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
 
   // autenticates (returns only true or false)
-  ad.authenticate(username, password, function (error, auth) {
+  ad.authenticate(username, password, async function (error, auth) {
     if (error) {
       console.log('ERROR: ' + JSON.stringify(error));
       return next(Error('Username or password is incorrect'));
@@ -39,21 +40,33 @@ function authenticate(req, res, next) {
       var query = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + name + "))";
 
       //var ad = new ActiveDirectory(config);
-      ad.find(query, function (err, results) {
+      ad.find(query, async function (err, results) {
         if (err) {
           // console.log('ERROR: ' + JSON.stringify(error));
           return next(Error('Username or password is incorrect'));
         }
         if (!results) console.log('User: ' + username + ' not found.');
         else {
-          // console.log(results.users[0]);
-          // sends user in specific format, required in frontend to store properly
-          const token = jwt.sign({ sub: results.users[0] }, config.secret);
-          const { ...userWithoutPassword } = results.users[0];
-          return res.json({
-            ...userWithoutPassword,
-            token
-          })
+
+          /////////////// time to get role start //////////////////////////////////
+          // notice nesting to get value from getRole
+          var role = await getRole(results, async function (role) {
+
+            console.log("rola :" + role);
+            ////////////// time to get role end ///////////////////////////////////////
+
+            results.users[0].role = await role;
+            // console.log(results.users[0]);
+            // sends user in specific format, required in frontend to store properly
+            const token = jwt.sign({ sub: results.users[0] }, config.secret);
+            const { ...userWithoutPassword } = results.users[0];
+            return res.json({
+              ...userWithoutPassword,
+              token
+            })
+
+          });
+
         }
       });
 
@@ -66,6 +79,53 @@ function authenticate(req, res, next) {
 }
 
 
+
+async function getRole(input, output) {
+
+  var query = "(&(objectClass=user)(objectCategory=person))";
+  ad.find(query, async function (err, results) {
+    if ((err) || (!results)) {
+      // console.log('ERROR: ' + JSON.stringify(err));
+      res.send(err);
+    } else {
+      const allUsers = await results.users;
+      myManager = await allUsers.filter(allUsers => allUsers.dn === input.users[0].manager);
+
+      console.log("SU to prensd " + myManager)
+      if (myManager[0] === undefined) {
+        output(3); // if There is no manager above me I am director
+        return;
+      }
+      else {
+        // finds my boss boss
+        myManagerManager = await allUsers.filter(allUsers => allUsers.dn === myManager[0].manager);
+
+        if (myManagerManager[0] === undefined) {
+          output(2); // if There is 1 manager above me I am LM
+          return;
+        }
+        else {
+          myManagerManagerManager = await allUsers.filter(allUsers => allUsers.dn === myManagerManager[0].manager);
+
+          if (myManagerManagerManager[0] === undefined) {
+            output(1); // if There are 2 managers above me I am TL
+            return;
+          }
+
+          else {
+            myManagerManagerManagerManager = await allUsers.filter(allUsers => allUsers.dn === myManagerManagerManager[0].manager);
+
+            if (myManagerManagerManagerManager[0] === undefined) {
+              output(0); // if There are 3 managers above me I am normal user (no one below me)
+              return;
+            }
+          }
+        }
+        output(15); // something went wrong 
+      }
+    }
+  });
+}
 
 //  https://social.technet.microsoft.com/wiki/contents/articles/5392.active-directory-ldap-syntax-filters.aspx
 // shows also disabled users
@@ -125,8 +185,9 @@ function getBysAMAccountName(sAMAccountName) {
 
 //check this https://forums.asp.net/t/1716111.aspx?query+AD+to+get+all+Employees+of+a+manager+
 function getMyDirectSubordinates(req, res, next) {
+  var dn = req.body.dn;
 
-  var query = "(&(objectClass=user)(objectCategory=person)(manager=CN=Kondas Jaroslav,OU=DieboldUsers,DC=dn,DC=exmpl))" ;
+  var query = "(&(objectClass=user)(objectCategory=person)(manager=" + dn + "))";
   ad.find(query, function (err, results) {
     if ((err) || (!results)) {
       // console.log('ERROR: ' + JSON.stringify(err));
@@ -162,17 +223,17 @@ function getMyDirectSubordinates() {
 }*/
 
 function getMyAllSubordinates(req, res, next) {
-  res.send(getMyAllSubordinates);
-}
-
-function getMyAllSubordinates() {
-  //vsetci moji podriadeny aj ich podriadeny...    
-
-  var currentUser = getById(163004);
-  //musime zistit kto je teraz prihlaseny, aby sme dostali jeho distinguishedName a hladali podla query 'manager='+user.distinguishedName;
-  //nech je teraz prihlaseny akoze Waldhauser Peter, ktory ma id 163004
-
-  console.log("TODO");//TODO
+  var query = "(&(objectClass=user)(objectCategory=person)(manager=CN=Kondas Jaroslav,OU=DieboldUsers,DC=dn,DC=exmpl))";
+  ad.find(query, function (err, results) {
+    if ((err) || (!results)) {
+      // console.log('ERROR: ' + JSON.stringify(err));
+      res.send(err);
+      return;
+    } else {
+      console.log(results.users);
+      res.send(results.users);
+    }
+  });
 }
 
 

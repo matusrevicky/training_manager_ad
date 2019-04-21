@@ -26,7 +26,7 @@ export class ClusterModalComponent implements OnChanges {
   }
   get title():string {
     if (this.actionWithTraining == 'add') {
-      return 'Add new Agent';
+      return 'Add new Cluster';
     } else {
       return 'Edit Agent';
     }

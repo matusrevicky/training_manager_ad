@@ -1,3 +1,87 @@
 ﻿{
-    "secret": "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING"
+    "secret": "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING",
+    
+    "username": "svc-gio-adbind",
+    "password": "P@ssw0rd",
+    "groupName": "GSDCSK",
+    "usernameTest": "robert.horvath@dn.exmpl",
+    "passwordTest": "H3sielk0",
+
+
+    "mysql_config": {
+        "host": "localhost",
+        "user": "root",
+        "password": "password",
+        "database": "training_manager_ad",
+        "multipleStatements": true
+    },
+
+
+    "ad_config": {
+        "url": "ldap://dc2019",
+        "baseDN": "dc=dn,dc=exmpl",
+        "username": "svc-gio-adbind",
+        "password": "P@ssw0rd",
+        "Attr": {
+            "user": [
+                "dn",
+                "distinguishedName",
+                "userPrincipalName",
+                "sAMAccountName",
+                "mail",
+                "lockoutTime",
+                "whenCreated",
+                "pwdLastSet",
+                "userAccountControl",
+                "employeeID",
+                "sn",
+                "givenName",
+                "initials",
+                "cn",
+                "displayName",
+                "comment",
+                "description",
+                "manager",
+                "extensionAttribute1"
+            ],
+            "group": [
+                "dn",
+                "cn",
+                "description",
+                "distinguishedName",
+                "objectCategory"
+            ]
+        },
+        "attributes": {
+            "user": [
+                "dn",
+                "distinguishedName",
+                "userPrincipalName",
+                "sAMAccountName",
+                "mail",
+                "lockoutTime",
+                "whenCreated",
+                "pwdLastSet",
+                "userAccountControl",
+                "employeeID",
+                "sn",
+                "givenName",
+                "initials",
+                "cn",
+                "displayName",
+                "comment",
+                "description",
+                "manager",
+                "extensionAttribute1"
+            ],
+            "group": [
+                "dn",
+                "cn",
+                "description",
+                "distinguishedName",
+                "objectCategory"
+            ]
+        }
+    }
+    
 }

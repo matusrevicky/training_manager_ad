@@ -1,5 +1,7 @@
 
 export class Training {
+    idUserHasTraining: number;
+    idWholeTraining: number;
     idTraining: number;
     idCluster: number;
     idProvider: number;
@@ -7,6 +9,7 @@ export class Training {
     clustername: string;
     providername: string;
     price: number;
+    trainingStatus: number;
 
     constructor() {
         this.name = "";

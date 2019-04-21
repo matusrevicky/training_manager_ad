@@ -27,7 +27,7 @@ export class TrainingModalComponent implements OnChanges {
     if (this.actionWithTraining == 'add') {
       return 'Add new Training';
     } else {
-      return 'Edit Agent';
+      return 'Edit Training';
     }
   }
 

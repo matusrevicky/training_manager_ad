@@ -28,28 +28,28 @@ export class SubstituteComponent implements OnInit {
     }
 
      getSubstituesEmployees(user: User){
-        this.trainigService.getEmployeeTrainings(user.idUser).pipe(first()).subscribe(tr => {
+        this.trainigService.getEmployeeTrainings(user.distinguishedName).pipe(first()).subscribe(tr => {
             this.myEmployeeTrainings = tr;
         });
      }
 
-     onApprove(training:Training) {
-        this.trainigService.acceptUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
-            this.saved = true;
-            setTimeout(_=> this.saved = false, 5000);
-         });;
+    //  onApprove(training:Training) {
+    //     this.trainigService.acceptUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
+    //         this.saved = true;
+    //         setTimeout(_=> this.saved = false, 5000);
+    //      });;
          
          
-    }
+    // }
 
-    onDeny(training:Training) {
-        this.trainigService.denyUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
-            this.saved = true;
-            setTimeout(_=> this.saved = false, 5000);
-         });;
+    // onDeny(training:Training) {
+    //     this.trainigService.denyUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
+    //         this.saved = true;
+    //         setTimeout(_=> this.saved = false, 5000);
+    //      });;
          
       
 
-    }
+    // }
 
 }

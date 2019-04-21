@@ -11,40 +11,45 @@ import { take } from 'rxjs/operators';
 
 import { FormControl } from '@angular/forms';
 
-declare var $:any;
+declare var $: any;
 
 @Component({ templateUrl: 'myEmployeesTrainings.component.html' })
 export class MyEmployeesTrainingsComponent implements OnInit {
 
+    error = '';
 
-  
     trainings$ = new BehaviorSubject([]);
 
     superlatives$ = new BehaviorSubject<{ [superlativeName: string]: string }>({});
     tableDataSource$ = new BehaviorSubject<any[]>([]);
     displayedColumns$ = new BehaviorSubject<string[]>([
+        'idUserHasTraining',
+        'idUser',
         'nameUser',
-        'nameTraining',
+        'trainingname',
+        'price',
+        'providername',
+        'clustername',
         'trainingStatus',
         'onApprove',
         'onDeny'
-        
+
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
-    pageSize$ = new BehaviorSubject<number>(5);
+    pageSize$ = new BehaviorSubject<number>(1000);
     dataOnPage$ = new BehaviorSubject<any[]>([]);
     searchFormControl = new FormControl();
-    sortKey$ = new BehaviorSubject<string>('nameUser');
+    sortKey$ = new BehaviorSubject<string>('idUserHasTraining');
     sortDirection$ = new BehaviorSubject<string>('asc');
 
 
-  //  trainings: Training[] = [];
+    //  trainings: Training[] = [];
 
     private training: Training;
     private selected: Training;
     currentUser: User;
     private saved: boolean;
-    
+
 
     constructor(private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
 
@@ -73,16 +78,16 @@ export class MyEmployeesTrainingsComponent implements OnInit {
 
             Object.values(changedHeroData).forEach(hero => {
                 Object.keys(hero).forEach(key => {
-                    if (key === 'nameUser' || key === 'types') { return; }
+                    if (key === 'idUserHasTraining' || key === 'types') { return; }
 
                     const highest = `highest-${key}`;
                     if (!superlatives[highest] || hero[key] > changedHeroData[superlatives[highest]][key]) {
-                        superlatives[highest] = hero.nameUser;
+                        superlatives[highest] = hero.idUserHasTraining;
                     }
 
                     const lowest = `lowest-${key}`;
                     if (!superlatives[lowest] || hero[key] < changedHeroData[superlatives[lowest]][key]) {
-                        superlatives[lowest] = hero.nameUser;
+                        superlatives[lowest] = hero.idUserHasTraining;
                     }
                 });
             });
@@ -145,33 +150,38 @@ export class MyEmployeesTrainingsComponent implements OnInit {
     }
 
     getEmployeeTrainings() {
-        this.trainigService.getEmployeeTrainings(this.currentUser.idUser).pipe(first()).subscribe(tr => {
+        this.trainigService.getEmployeeTrainings(this.currentUser.distinguishedName).pipe(first()).subscribe(tr => {
             this.trainings$.next(tr);
         });
     }
 
-    onApprove(training:Training) {
-        this.trainigService.acceptUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
+    onApprove(training: Training) {
+        this.trainigService.acceptUserTraining(this.currentUser, training.idUserHasTraining, training.trainingStatus  ).subscribe(ok => {
             this.getEmployeeTrainings();
             this.saved = true;
-            setTimeout(_=> this.saved = false, 5000);
-         });;
-         
-        
-    
+            setTimeout(_ => this.saved = false, 5000);
+            this.error = '';
+           
+        },  error => {
+            this.error = error;
+        });;
     }
-    
-    onDeny(training:Training) {
-        this.trainigService.denyUserTraining(training, this.currentUser.idUser,this.currentUser.role ).subscribe(ok => {
+
+    onDeny(training: Training) {
+        this.trainigService.denyUserTraining(this.currentUser, training.idUserHasTraining, training.trainingStatus  ).subscribe(ok => {
             this.getEmployeeTrainings();
             this.saved = true;
-            setTimeout(_=> this.saved = false, 5000);
-         });;
-         
-        
-    
+            setTimeout(_ => this.saved = false, 5000);
+            this.error = '';
+        },  error => {
+            this.error = error;
+        });;
     }
-   
+
+    onChangePageSize(value) {
+        this.pageSize$.next(value);
+      }
+
 }
 
 

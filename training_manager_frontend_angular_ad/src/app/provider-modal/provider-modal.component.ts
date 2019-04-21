@@ -25,7 +25,7 @@ export class ProviderModalComponent implements OnChanges {
   }
   get title():string {
     if (this.actionWithTraining == 'add') {
-      return 'Add new Agent';
+      return 'Add new Provider';
     } else {
       return 'Edit Agent';
     }

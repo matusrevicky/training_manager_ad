@@ -31,7 +31,7 @@ export class TrainingsComponent implements OnInit {
         'onSubmit'
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
-    pageSize$ = new BehaviorSubject<number>(25);
+    pageSize$ = new BehaviorSubject<number>(1000);
     dataOnPage$ = new BehaviorSubject<any[]>([]);
     searchFormControl = new FormControl();
     sortKey$ = new BehaviorSubject<string>('name');
@@ -161,7 +161,7 @@ export class TrainingsComponent implements OnInit {
     }
 
     onSubmit(training: Training) {
-        this.trainigService.bindUserWithTraining(training, this.currentUser.extensionAttribute1).subscribe(ok => {
+        this.trainigService.bindUserWithTraining(training.idWholeTraining, this.currentUser).subscribe(ok => {
             this.getAllTrainings();
             this.saved = true;
             setTimeout(_ => this.saved = false, 5000);

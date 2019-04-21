@@ -30,7 +30,7 @@ export class MyTrainingsComponent implements OnInit {
         'status'
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
-    pageSize$ = new BehaviorSubject<number>(5);
+    pageSize$ = new BehaviorSubject<number>(1000);
     dataOnPage$ = new BehaviorSubject<any[]>([]);
     searchFormControl = new FormControl();
     sortKey$ = new BehaviorSubject<string>('name');

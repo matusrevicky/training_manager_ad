@@ -22,32 +22,85 @@
         <ngb-pagination [collectionSize]="tableDataSource$.value.length" [pageSize]="pageSize$.value"
           [page]="currentPage$.value" (pageChange)="currentPage$.next($event)">
         </ngb-pagination>
+
+        <div class="form-group">
+          <label for="sel1">Items per page</label>
+          <select class="form-control" id="sel1">
+              <option (click)="onChangePageSize(10)" value="10" >10</option>
+              <option (click)="onChangePageSize(25)"  value="25">25</option>
+              <option (click)="onChangePageSize(50)" value="50">50</option>
+              <option (click)="onChangePageSize(100)" value="100">100</option>
+              <option (click)="onChangePageSize(500)" value="500">500</option>
+              <option (click)="onChangePageSize(500)" selected="selected" value="1000">1000</option>
+          </select>
+        </div> 
+
       </div>
     </div>
   </div>
   
   <table cdk-table [dataSource]="dataOnPage$" class="table table-hover">
   
-    <!-- Hero Name Column -->
+    <!-- Id -->
+    <ng-container cdkColumnDef="idUserHasTraining">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('idUserHasTraining')">
+        ID <span *ngIf="sortKey$.value === 'idUserHasTraining'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.idUserHasTraining}} </td>
+    </ng-container>
+
+     <!-- user id -->
+     <ng-container cdkColumnDef="idUser">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('idUser')">
+        User ID <span *ngIf="sortKey$.value === 'idUser'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.idUser}} </td>
+    </ng-container>
+
+    <!-- user name -->
     <ng-container cdkColumnDef="nameUser">
       <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('nameUser')">
-        Hero Name <span *ngIf="sortKey$.value === 'nameUser'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+        User name<span *ngIf="sortKey$.value === 'nameUser'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
       </th>
       <td cdk-cell *cdkCellDef="let row"> {{row.nameUser}} </td>
     </ng-container>
 
-     <!-- Hero Name Column -->
-     <ng-container cdkColumnDef="nameTraining">
-      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('nameTraining')">
-        Hero Name <span *ngIf="sortKey$.value === 'nameTraining'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+     <!-- training name -->
+     <ng-container cdkColumnDef="trainingname">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('trainingname')">
+        Training name <span *ngIf="sortKey$.value === 'trainingname'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
       </th>
-      <td cdk-cell *cdkCellDef="let row"> {{row.nameTraining}} </td>
+      <td cdk-cell *cdkCellDef="let row"> {{row.trainingname}} </td>
     </ng-container>
-  
-     <!-- Hero Name Column -->
+
+     <!--  price -->
+     <ng-container cdkColumnDef="price">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('price')">
+        Price <span *ngIf="sortKey$.value === 'price'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
+    </ng-container>
+   
+     <!--  providername -->
+     <ng-container cdkColumnDef="providername">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('providername')">
+        Provider name <span *ngIf="sortKey$.value === 'providername'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.providername}} </td>
+    </ng-container>
+
+    <!--  clustername  -->
+    <ng-container cdkColumnDef="clustername">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('clustername')">
+        Cluster name <span *ngIf="sortKey$.value === 'clustername'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.clustername}} </td>
+    </ng-container>
+
+     <!-- Training Status  -->
      <ng-container cdkColumnDef="trainingStatus">
       <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('trainingStatus')">
-        Hero Name <span *ngIf="sortKey$.value === 'trainingStatus'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+       Training Status <span *ngIf="sortKey$.value === 'trainingStatus'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
       </th>
       <td cdk-cell *cdkCellDef="let row"> {{row.trainingStatus}} </td>
     </ng-container>
@@ -74,6 +127,8 @@
     <tr cdk-row *cdkRowDef="let row; columns: displayedColumns$.value"></tr>
   
   </table>
+
+  <div *ngIf="error" class="alert alert-danger">{{error}}</div>
   
 
 
