@@ -9,7 +9,7 @@ import { TrainingsComponent } from './trainings';
 import { MyTrainingsComponent } from './myTrainings';
 import { MyEmployeesTrainingsComponent } from './myEmployeesTrainings';
 import { SubstituteComponent } from './substitute';
-import { TableComponent } from './table/table.component';
+import { Procurement } from './procurement';
 import { ManageTrainingsComponent } from './manageTrainings';
 
 const appRoutes: Routes = [
@@ -49,6 +49,12 @@ const appRoutes: Routes = [
        
     },
     {
+        path: 'procurement',
+        component: Procurement,
+        canActivate: [AuthGuard],
+       
+    },
+    {
         path: 'substitute',
         component: SubstituteComponent,
         canActivate: [AuthGuard],
@@ -59,10 +65,6 @@ const appRoutes: Routes = [
         component: LoginComponent
     },
 
-    {
-        path: 'table',
-        component: TableComponent
-    },
 
 
     // otherwise redirect to home

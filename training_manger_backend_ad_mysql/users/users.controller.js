@@ -13,7 +13,7 @@ var _ = require('underscore');
 router.post('/authenticate', authenticate);     // public route
 router.get('/', authorize(), getAll);     // all authenticated users
 router.get('/:id', authorize(), getByextensionAttribute1);    // all authenticated users
-router.get('/myEmployees/emp', getMyDirectSubordinates);    // all authenticated users  getMyRole
+router.get('/myEmployees/emp', authorize(), getMyDirectSubordinates);    // all authenticated users  getMyRole
 
 
 module.exports = router;
@@ -52,10 +52,22 @@ async function authenticate(req, res, next) {
           // notice nesting to get value from getRole
           var role = await getRole(results, async function (role) {
 
-            console.log("rola :" + role);
+            
             ////////////// time to get role end ///////////////////////////////////////
 
+            // determines if user is procurement - start
             results.users[0].role = await role;
+            help = await config.procurement.find(function(element) {
+              return element === results.users[0].extensionAttribute1;
+            });
+            
+            if(help === undefined){
+              results.users[0].procurement = 0;
+            } else {
+              results.users[0].procurement = 1;
+            }
+            //determines if user is procurement - end
+
             // console.log(results.users[0]);
             // sends user in specific format, required in frontend to store properly
             const token = jwt.sign({ sub: results.users[0] }, config.secret);

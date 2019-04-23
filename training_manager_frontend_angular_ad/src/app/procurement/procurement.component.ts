@@ -5,7 +5,7 @@ import { User } from '@/_models';
 import { UserService, AuthenticationService } from '@/_services';
 import { Training } from '@/_models/training';
 import { TrainingService } from '@/_services/training.service';
-import { ExcelService } from '../_services/excel.service';
+
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -13,43 +13,45 @@ import { FormControl } from '@angular/forms';
 
 declare var $: any;
 
-@Component({ templateUrl: 'myTrainings.component.html' })
-export class MyTrainingsComponent implements OnInit {
+@Component({ templateUrl: 'procurement.component.html' })
+export class Procurement implements OnInit {
 
-
+    error = '';
 
     trainings$ = new BehaviorSubject([]);
-    trainings: Training[] = [];
 
     superlatives$ = new BehaviorSubject<{ [superlativeName: string]: string }>({});
     tableDataSource$ = new BehaviorSubject<any[]>([]);
     displayedColumns$ = new BehaviorSubject<string[]>([
-
         'idUserHasTraining',
-        'name',
-        'provider',
-        'cluster',
+        'idUser',
+        'nameUser',
+        'trainingname',
         'price',
-        'status',
+        'providername',
+        'clustername',
+        'trainingStatus',
         'ProcurementStatus',
         'UserStatus',
         'AdditionalNoteUser',
         'AdditionalNoteProcurement',
         'DecisionByProcurementDate',
         'SignUpDate',
-        'participateUser',
-        'cancelUser',
-        'noteUser'
+        'noteUser',
+        'acceptedProcurement',
+        'orderedProcurement',
+        'cancelledProcurement'
+
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
     pageSize$ = new BehaviorSubject<number>(1000);
     dataOnPage$ = new BehaviorSubject<any[]>([]);
     searchFormControl = new FormControl();
-    sortKey$ = new BehaviorSubject<string>('name');
+    sortKey$ = new BehaviorSubject<string>('idUserHasTraining');
     sortDirection$ = new BehaviorSubject<string>('asc');
 
 
-
+    //  trainings: Training[] = [];
 
     private training: Training;
     private selected: Training;
@@ -57,31 +59,32 @@ export class MyTrainingsComponent implements OnInit {
     private saved: boolean;
 
 
-    constructor(private excelService: ExcelService, private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
+    constructor(private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
 
     ngOnInit() {
 
         // loads data into behavorial subject
-        this.getMyTrainings();
+        this.getgetEveryonesTrainings();
 
 
         // console.log(this.tra$);
         this.trainings$.subscribe(changedHeroData => {
             const superlatives = {
+
             };
 
             Object.values(changedHeroData).forEach(hero => {
                 Object.keys(hero).forEach(key => {
-                    if (key === 'name' || key === 'types') { return; }
+                    if (key === 'idUserHasTraining' || key === 'types') { return; }
 
                     const highest = `highest-${key}`;
                     if (!superlatives[highest] || hero[key] > changedHeroData[superlatives[highest]][key]) {
-                        superlatives[highest] = hero.name;
+                        superlatives[highest] = hero.idUserHasTraining;
                     }
 
                     const lowest = `lowest-${key}`;
                     if (!superlatives[lowest] || hero[key] < changedHeroData[superlatives[lowest]][key]) {
-                        superlatives[lowest] = hero.name;
+                        superlatives[lowest] = hero.idUserHasTraining;
                     }
                 });
             });
@@ -143,41 +146,42 @@ export class MyTrainingsComponent implements OnInit {
         this.sortDirection$.next('asc');
     }
 
-    onChangePageSize(value) {
-        this.pageSize$.next(value);
-    }
-
-    getMyTrainings() {
-        this.trainigService.getMyTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
+    getgetEveryonesTrainings() {
+        this.trainigService.getEveryonesTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
             this.trainings$.next(tr);
         });
     }
 
-    participateUser(training: Training) {
-        this.trainigService.participateUser(this.currentUser, training.idUserHasTraining).subscribe(ok => {
-            this.getMyTrainings();
+    onChangePageSize(value) {
+        this.pageSize$.next(value);
+    }
+
+
+    acceptedProcurement(training: Training) {
+        this.trainigService.acceptedProcurement(this.currentUser, training.idUserHasTraining).subscribe(ok => {
+            this.getgetEveryonesTrainings();
             this.saved = true;
             setTimeout(_ => this.saved = false, 5000);
         });;
     }
 
-    cancelUser(training: Training) {
-        this.trainigService.cancelUser(this.currentUser, training.idUserHasTraining).subscribe(ok => {
-            this.getMyTrainings();
+    orderedProcurement(training: Training) {
+        this.trainigService.orderedProcurement(this.currentUser, training.idUserHasTraining).subscribe(ok => {
+            this.getgetEveryonesTrainings();
             this.saved = true;
             setTimeout(_ => this.saved = false, 5000);
         });;
     }
 
-    // export to excel  // https://stackblitz.com/edit/angular6-export-xlsx?file=src%2Fapp%2Fapp.module.ts
-    exportAsXLSX(): void {
-
-        this.trainings$.subscribe(changedTrainingData => {
-            this.trainings = changedTrainingData;
-            this.excelService.exportAsExcelFile(this.trainings, 'My trainings');
-        });
-
+    cancelledProcurement(training: Training) {
+        this.trainigService.cancelledProcurement(this.currentUser, training.idUserHasTraining).subscribe(ok => {
+            this.getgetEveryonesTrainings();
+            this.saved = true;
+            setTimeout(_ => this.saved = false, 5000);
+        });;
     }
+    
+
 
     //////////////////////////// note start ////////////////////////////////
     private action = 'add';
@@ -187,21 +191,21 @@ export class MyTrainingsComponent implements OnInit {
     editNoteClicked(training: Training) {
         this.action = 'edit';
         this.editedTraining = JSON.parse(JSON.stringify(training));
-        $('#noteModal').modal('show');
+        $('#notePModal').modal('show');
     }
 
     editedNoteSaved(training: Training) {
         if (this.action == 'add') {
-            this.trainigService.saveUserNote(training).subscribe(ok => {
-                this.getMyTrainings();
+            this.trainigService.saveProcurementNote(training).subscribe(ok => {
+                this.getgetEveryonesTrainings();
             },
                 errorMsg => {
                     this.status = 'error';
                     console.log("chyba komunikacie: " + JSON.stringify(errorMsg));
                 });
         } else {
-            this.trainigService.saveUserNote(training).subscribe(ok => {
-                this.getMyTrainings();
+            this.trainigService.saveProcurementNote(training).subscribe(ok => {
+                this.getgetEveryonesTrainings();
             },
                 errorMsg => {
                     this.status = 'error';
@@ -210,6 +214,28 @@ export class MyTrainingsComponent implements OnInit {
         }
     }
 
+
+
     //////////////////////////// note end ////////////////////////////////
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

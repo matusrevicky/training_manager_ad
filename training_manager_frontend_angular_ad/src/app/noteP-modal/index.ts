@@ -1,0 +1,1 @@
+export * from './noteP-modal.component';

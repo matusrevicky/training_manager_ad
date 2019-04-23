@@ -6,13 +6,14 @@
         <a class="nav-item nav-link" routerLink="/trainings" >Trainings</a>    
         <a class="nav-item nav-link" routerLink="/myTrainings" >MY Trainings</a>
         <a class="nav-item nav-link" routerLink="/employeeTrainings" >MY employee Trainings</a>    
+        <a class="nav-item nav-link" routerLink="/procurement" >Procurement</a> 
         <a class="nav-item nav-link" routerLink="/manageTrainings" >Manage Trainings</a>      
 
         <a class="nav-item nav-link" (click)="logout()">Logout</a>
     </div>
 </nav>
 
-<!-- main app container -->
+<!-- main app container old
 <div class="jumbotron">
     <div class="container">
         <div class="row">
@@ -21,7 +22,17 @@
             </div>
         </div>
     </div>
-</div>
+</div>  -->
+
+
+<div class="jumbotron">
+        
+            <div align="center" float="center">              
+                    <router-outlet></router-outlet>               
+            </div>
+        
+    </div>
+    
 
 <!-- credits -->
 <div class="text-center">

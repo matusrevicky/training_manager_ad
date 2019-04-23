@@ -10,6 +10,9 @@ export class Training {
     providername: string;
     price: number;
     trainingStatus: number;
+    active:number;
+    AdditionalNoteUser: string;
+    AdditionalNoteProcurement: string;
 
     constructor() {
         this.name = "";

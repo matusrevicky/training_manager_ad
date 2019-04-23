@@ -1,5 +1,4 @@
-
-  <h1 class="display-3">My Trainings</h1>
+<h1 class="display-3">My Trainings</h1>
 
 <div class="row">
   <div class="col-6">
@@ -11,6 +10,7 @@
             <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
               x
             </button>
+            <button  class="btn btn-primary" (click)="exportAsXLSX()">Export to excel</button>
           </div>
         </div>
       </div>
@@ -25,14 +25,14 @@
       <div class="form-group">
         <label for="sel1">Items per page</label>
         <select class="form-control" id="sel1">
-            <option (click)="onChangePageSize(10)" value="10" >10</option>
-            <option (click)="onChangePageSize(25)"  value="25">25</option>
-            <option (click)="onChangePageSize(50)" value="50">50</option>
-            <option (click)="onChangePageSize(100)" value="100">100</option>
-            <option (click)="onChangePageSize(500)" value="500">500</option>
-            <option (click)="onChangePageSize(500)" selected="selected" value="1000">1000</option>
+          <option (click)="onChangePageSize(10)" value="10">10</option>
+          <option (click)="onChangePageSize(25)" value="25">25</option>
+          <option (click)="onChangePageSize(50)" value="50">50</option>
+          <option (click)="onChangePageSize(100)" value="100">100</option>
+          <option (click)="onChangePageSize(500)" value="500">500</option>
+          <option (click)="onChangePageSize(500)" selected="selected" value="1000">1000</option>
         </select>
-      </div> 
+      </div>
 
 
     </div>
@@ -40,6 +40,15 @@
 </div>
 
 <table cdk-table [dataSource]="dataOnPage$" class="table table-hover">
+
+  <!--  idUserHasTraining Column -->
+  <ng-container cdkColumnDef="idUserHasTraining">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('idUserHasTraining')">
+          id User Has Training<span *ngIf="sortKey$.value === 'idUserHasTraining'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.idUserHasTraining}} </td>
+    </ng-container>
+  
 
   <!--  Name Column -->
   <ng-container cdkColumnDef="name">
@@ -73,18 +82,91 @@
     <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
   </ng-container>
 
- <!-- Status Column -->
- <ng-container cdkColumnDef="status">
-  <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('status')">
-    Status <span *ngIf="sortKey$.value === 'status'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
-  </th>
-  <td cdk-cell *cdkCellDef="let row"
-      [ngClass]="{ 
-        'table-success': 'Pending Approval' === row.status,
-        'table-danger': superlatives$.value['lowest-health'] === row.name
+   <!-- SignUpDate Column -->
+   <ng-container cdkColumnDef="SignUpDate">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('SignUpDate')">
+          Sign Up Date <span *ngIf="sortKey$.value === 'SignUpDate'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.SignUpDate}} </td>
+    </ng-container>
+
+    <!-- ProcurementStatus Column -->
+   <ng-container cdkColumnDef="DecisionByProcurementDate">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('DecisionByProcurementDate')">
+          Decision By Procurement Date <span *ngIf="sortKey$.value === 'DecisionByProcurementDate'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.DecisionByProcurementDate}} </td>
+    </ng-container>
+    
+    <!-- ProcurementStatus Column -->
+   <ng-container cdkColumnDef="ProcurementStatus">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('ProcurementStatus')">
+          Procurement Status <span *ngIf="sortKey$.value === 'ProcurementStatus'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.ProcurementStatus}} </td>
+    </ng-container>
+
+     <!-- UserStatus Column -->
+   <ng-container cdkColumnDef="UserStatus">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('UserStatus')">
+          User Status <span *ngIf="sortKey$.value === 'UserStatus'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.UserStatus}} </td>
+    </ng-container>
+
+    <!-- AdditionalNoteProcurement Column -->
+   <ng-container cdkColumnDef="AdditionalNoteProcurement">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('AdditionalNoteProcurement')">
+          Additional Note Procurement <span *ngIf="sortKey$.value === 'AdditionalNoteProcurement'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.AdditionalNoteProcurement}} </td>
+    </ng-container>
+
+     <!-- AdditionalNoteUser Column -->
+   <ng-container cdkColumnDef="AdditionalNoteUser">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('AdditionalNoteUser')">
+          Additional Note User <span *ngIf="sortKey$.value === 'AdditionalNoteUser'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.AdditionalNoteUser}} </td>
+    </ng-container>
+
+  <!-- Status Column -->
+  <ng-container cdkColumnDef="status">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('status')">
+      Status <span *ngIf="sortKey$.value === 'status'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row" [ngClass]="{ 
+        'table-success': 1 === row.status
       }">
-    {{row.status}} </td>
-</ng-container>
+      {{row.status}} </td>
+  </ng-container>
+
+   <!-- participate Column -->
+   <ng-container cdkColumnDef="participateUser">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+        <button class="btn btn-primary" (click)="participateUser(row)">Participate!!!</button>
+      </td>
+    </ng-container>
+
+    <!-- cancel Column -->
+   <ng-container cdkColumnDef="cancelUser">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+        <button class="btn btn-primary" (click)="cancelUser(row)">Cancel!!!</button>
+      </td>
+    </ng-container>
+
+     <!-- note Column -->
+   <ng-container cdkColumnDef="noteUser">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#noteModal"
+          (click)="editNoteClicked(row)">
+          Add note
+        </button>
+      </td>
+    </ng-container>
 
   <!-- Header and Row Declarations -->
   <tr cdk-header-row *cdkHeaderRowDef="displayedColumns$.value"></tr>
@@ -92,6 +174,7 @@
 
 </table>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#trainingModal" (click)="addTrainingButtonClicked()">
-  Add training
-</button>
+
+
+<app-note-modal (savedTraining)="editedNoteSaved($event)" [training]="editedTraining"
+  [actionWithTraining]="action"></app-note-modal>

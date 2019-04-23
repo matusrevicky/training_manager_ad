@@ -27,14 +27,17 @@ export class ManageTrainingsComponent implements OnInit {
   superlatives$ = new BehaviorSubject<{ [superlativeName: string]: string }>({});
   tableDataSource$ = new BehaviorSubject<any[]>([]);
   displayedColumns$ = new BehaviorSubject<string[]>([
+    'Active',
     'name',
     'clustername',
     'providername',
-    'price'
+    'price',
+    'disableWholeTraining',
+    'enableWholeTraining'
 
   ]);
   currentPage$ = new BehaviorSubject<number>(1);
-  pageSize$ = new BehaviorSubject<number>(25);
+  pageSize$ = new BehaviorSubject<number>(10000);
   dataOnPage$ = new BehaviorSubject<any[]>([]);
   searchFormControl = new FormControl();
   sortKey$ = new BehaviorSubject<string>('name');
@@ -68,18 +71,7 @@ export class ManageTrainingsComponent implements OnInit {
     // console.log(this.tra$);
     this.trainings$.subscribe(changedHeroData => {
       const superlatives = {
-        'highest-attack': null,
-        'lowest-attack': null,
-        'highest-defense': null,
-        'lowest-defense': null,
-        'highest-speed': null,
-        'lowest-speed': null,
-        'highest-healing': null,
-        'lowest-healing': null,
-        'highest-recovery': null,
-        'lowest-recovery': null,
-        'highest-health': null,
-        'lowest-health': null
+
       };
 
       Object.values(changedHeroData).forEach(hero => {
@@ -298,6 +290,22 @@ export class ManageTrainingsComponent implements OnInit {
     pipe.subscribe(usersFromPipe => {
       this.clusters = usersFromPipe
     });
+  }
+
+  disableWholeTraining(wholeTraining: Training){
+    this.trainigService.disableWholeTraining(this.currentUser, wholeTraining.idWholeTraining).subscribe(ok => {
+      this.getAllTrainings();
+      this.saved = true;
+      setTimeout(_ => this.saved = false, 5000);
+    });;
+  }
+
+  enableWholeTraining(wholeTraining: Training){
+    this.trainigService.enableWholeTraining(this.currentUser, wholeTraining.idWholeTraining).subscribe(ok => {
+      this.getAllTrainings();
+      this.saved = true;
+      setTimeout(_ => this.saved = false, 5000);
+    });;
   }
   //////////////////////////// clusters end ////////////////////////////////
 

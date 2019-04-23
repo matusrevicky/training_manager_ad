@@ -5,11 +5,12 @@
     <div class="form-inline">
       <div class="form-group">
         <div class="input-group mr-3">
-          <input type="text" class="form-control" placeholder="Search..." [formControl]="searchFormControl">
+          <input type="text" class="form-control" placeholder="Search..." [formControl]="searchFormControl" >
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
               x
             </button>
+            <button  class="btn btn-primary" (click)="exportAsXLSX()">Export to excel</button>
           </div>
         </div>
       </div>
@@ -23,7 +24,7 @@
 
 
      
-      <button  class="btn btn-primary" (click)="exportAsXLSX()">Extort to excel</button>
+     
 
       <div class="form-group">
         <label for="sel1">Items per page</label>
@@ -42,6 +43,15 @@
 </div>
 
 <table cdk-table [dataSource]="dataOnPage$" class="table table-hover">
+
+
+   <!-- Training Name Column -->
+   <ng-container cdkColumnDef="idWholeTraining">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('idWholeTraining')">
+      Whole Training ID<span *ngIf="sortKey$.value === 'idWholeTraining'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.idWholeTraining}} </td>
+  </ng-container>
 
   <!-- Training Name Column -->
   <ng-container cdkColumnDef="name">
@@ -74,6 +84,22 @@
     </th>
     <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
   </ng-container>
+  
+  <!--  Creation Time Column -->
+  <ng-container cdkColumnDef="CreationTime">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('CreationTime')">
+          Creation Time <span *ngIf="sortKey$.value === 'CreationTime'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.CreationTime}} </td>
+    </ng-container>
+
+    <!--  IsMy Time Column -->
+  <ng-container cdkColumnDef="isMy">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('isMy')">
+          Already signed <span *ngIf="sortKey$.value === 'isMy'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.isMy}} </td>
+    </ng-container>
 
   <!-- Sign Column -->
   <ng-container cdkColumnDef="onSubmit">

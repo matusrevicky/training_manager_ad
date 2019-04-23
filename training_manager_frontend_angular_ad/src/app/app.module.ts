@@ -19,13 +19,15 @@ import { ManageTrainingsComponent } from './manageTrainings';
 import { TrainingModalComponent } from './training-modal';
 import { ProviderModalComponent } from './provider-modal';
 import { ClusterModalComponent } from './cluster-modal';
+import { NoteModalComponent } from './note-modal';
+import { NotePModalComponent } from './noteP-modal';
 
 import { MyTrainingsComponent } from './myTrainings';
 import { MyEmployeesTrainingsComponent } from './myEmployeesTrainings';
 import { SubstituteComponent } from './substitute';
+import { Procurement } from './procurement';
 
 import { CdkTableModule } from '@angular/cdk/table';
-import { TableComponent } from './table/table.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ExcelService } from './_services/excel.service';
@@ -52,11 +54,12 @@ import { ExcelService } from './_services/excel.service';
         TrainingModalComponent,
         ProviderModalComponent,
         ClusterModalComponent,
+        NoteModalComponent,
         MyTrainingsComponent,
         MyEmployeesTrainingsComponent,
         SubstituteComponent,
-
-        TableComponent
+        Procurement,
+        NotePModalComponent
 
 
     ],

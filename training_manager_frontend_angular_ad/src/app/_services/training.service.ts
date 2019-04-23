@@ -12,12 +12,19 @@ import { wholeTraining } from '@/_models/wholeTraining';
 export class TrainingService {
   constructor(private http: HttpClient) { }
 
-
+  
   getAllTrainings(id: number) {
     return this.http.get<Training[]>(`${config.apiUrl}/trainings/all/${id}`);
   }
+  getActiveTrainings(id: number) {
+    return this.http.get<Training[]>(`${config.apiUrl}/trainings/active/${id}`);
+  }
+  getEveryonesTrainings(id: number) {
+    return this.http.get<Training[]>(`${config.apiUrl}/trainings/procurement/everyone/${id}`);
+  }
 
-  bindUserWithTraining( id: number, user: User): Observable<boolean> {
+
+  bindUserWithTraining(id: number, user: User): Observable<boolean> {
     return this.http.post(`${config.apiUrl}/trainings/bindwithuser/${id}`, user).pipe(map(_ => true));
   }
 
@@ -29,6 +36,41 @@ export class TrainingService {
     return this.http.post(`${config.apiUrl}/trainings/denyUserTraining/${id}/${status}`, user).pipe(map(_ => true));
   }
 
+  disableWholeTraining(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/state/${id}`, user).pipe(map(_ => true));
+  }
+
+
+  participateUser(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/participate/${id}`, user).pipe(map(_ => true));
+  }
+  cancelUser(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/cancel/${id}`, user).pipe(map(_ => true));
+  }
+
+  ///// procurement
+  acceptedProcurement(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/acc/${id}`, user).pipe(map(_ => true));
+  }
+  orderedProcurement(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/ord/${id}`, user).pipe(map(_ => true));
+  }
+  cancelledProcurement(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/can/${id}`, user).pipe(map(_ => true));
+  }
+  saveProcurementNote(training: Training): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/procurementNote`, training).pipe(map(_ => true));
+  }
+
+  //////
+
+  saveUserNote(training: Training): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/userNote`, training).pipe(map(_ => true));
+  }
+
+  enableWholeTraining(user: User, id: number): Observable<boolean> {
+    return this.http.post(`${config.apiUrl}/trainings/wholeTraining/stateE/${id}`, user).pipe(map(_ => true));
+  }
 
   getMyTrainings(id: number) {
     return this.http.get<Training[]>(`${config.apiUrl}/trainings/${id}`);

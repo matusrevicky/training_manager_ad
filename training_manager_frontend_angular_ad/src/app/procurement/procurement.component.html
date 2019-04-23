@@ -1,6 +1,4 @@
-
-
-  <h1 class="display-3">My Employee Trainings</h1>
+  <h1 class="display-3">Procurement</h1>
 
   <div class="row">
     <div class="col-6">
@@ -154,21 +152,40 @@
     </ng-container>
 
       <!-- Level Up Column -->
-  <ng-container cdkColumnDef="onApprove">
+  <ng-container cdkColumnDef="noteUser">
     <th cdk-header-cell *cdkHeaderCellDef></th>
     <td cdk-cell *cdkCellDef="let row">
-      <button  class="btn btn-success" (click)="onApprove(row)">approve</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notePModal"
+        (click)="editNoteClicked(row)">
+        Add note
+      </button>
     </td>
   </ng-container>
 
-    <!-- Level Up Column -->
-    <ng-container cdkColumnDef="onDeny">
+   <!-- cancel Column -->
+   <ng-container cdkColumnDef="acceptedProcurement">
       <th cdk-header-cell *cdkHeaderCellDef></th>
       <td cdk-cell *cdkCellDef="let row">
-        <button  class="btn btn-danger" (click)="onDeny(row)">Deny</button>
+        <button class="btn btn-primary" (click)="acceptedProcurement(row)">Accepted!!!</button>
       </td>
     </ng-container>
-  
+     <!-- cancel Column -->
+
+   <ng-container cdkColumnDef="orderedProcurement">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+        <button class="btn btn-primary" (click)="orderedProcurement(row)">Ordered!!!</button>
+      </td>
+    </ng-container>
+     <!-- cancel Column -->
+
+   <ng-container cdkColumnDef="cancelledProcurement">
+      <th cdk-header-cell *cdkHeaderCellDef></th>
+      <td cdk-cell *cdkCellDef="let row">
+        <button class="btn btn-primary" (click)="cancelledProcurement(row)">Cancel!!!</button>
+      </td>
+    </ng-container>
+
    
     <!-- Header and Row Declarations -->
     <tr cdk-header-row *cdkHeaderRowDef="displayedColumns$.value"></tr>
@@ -178,6 +195,8 @@
 
   <div *ngIf="error" class="alert alert-danger">{{error}}</div>
   
+  <app-noteP-modal (savedTraining)="editedNoteSaved($event)" [training]="editedTraining"
+  [actionWithTraining]="action"></app-noteP-modal>
 
 
        

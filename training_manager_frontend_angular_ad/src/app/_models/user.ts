@@ -9,6 +9,7 @@ export class User {
     email?: string;
     idBoss?: number;
     role?: number;
+    procurement?: number;
     token?: string;
 
     cn: string;

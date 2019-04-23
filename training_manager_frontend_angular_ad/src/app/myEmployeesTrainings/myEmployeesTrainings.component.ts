@@ -31,6 +31,12 @@ export class MyEmployeesTrainingsComponent implements OnInit {
         'providername',
         'clustername',
         'trainingStatus',
+        'ProcurementStatus',
+        'UserStatus',
+        'AdditionalNoteUser',
+        'AdditionalNoteProcurement',
+        'DecisionByProcurementDate',
+        'SignUpDate',
         'onApprove',
         'onDeny'
 

@@ -6,21 +6,35 @@ const Role = require('_helpers/role');
 const Approvals = require('_helpers/approvals');
 const db = require('_helpers/db');
 const ad = require('_helpers/ad');
+const config = require('config.json');
 
 // routes
 router.get('/all/:id', authorize(), getAllWholeTrainings);
-router.get('/:id', getMyTrainings);
-router.get('/employeeTrainings/:id', getEmployeeTrainings);
+router.get('/active/:id', authorize(), getActiveWholeTrainings);
+router.get('/procurement/everyone/:id', authorize(), getEveryonesTrainings);
+
+router.get('/:id', authorize(), getMyTrainings);
+router.get('/employeeTrainings/:id', authorize(), getEmployeeTrainings);
 router.post('/bindwithuser/:id', authorize(), bindUserWithTraining);
 router.post('/acceptUserTraining/:id/:status', authorize(), acceptUserTraining);
 router.post('/denyUserTraining/:id/:status', authorize(), denyUserTraining);
 router.post('/', authorize(), createTraining);
 router.post('/provider', authorize(), createProvider);
 router.post('/cluster', authorize(), createCluster);
-router.get('/cluster/clusters', getClusters);
-router.get('/provider/providers', getProviders);
-router.get('/training/trainings', getTrainings);
-router.post('/wholeTraining', saveWholeTraining);
+router.get('/cluster/clusters', authorize(), getClusters);
+router.get('/provider/providers', authorize(), getProviders);
+router.get('/training/trainings', authorize(), getTrainings);
+router.post('/wholeTraining', authorize(), saveWholeTraining);
+router.post('/wholeTraining/state/:id', authorize(), disableWholeTraining);
+router.post('/wholeTraining/stateE/:id', authorize(), enableWholeTraining);
+router.post('/wholeTraining/participate/:id', authorize(), participateUser);
+router.post('/wholeTraining/cancel/:id', authorize(), cancelUser);
+router.post('/userNote', authorize(), saveUserNote);
+router.post('/procurementNote', authorize(), saveProcurementNote);
+
+router.post('/wholeTraining/acc/:id', authorize(), acceptedProcurement);
+router.post('/wholeTraining/ord/:id', authorize(), orderedProcurement);
+router.post('/wholeTraining/can/:id', authorize(), cancelledProcurement);
 
 module.exports = router;
 
@@ -34,13 +48,13 @@ function denyUserTraining(req, res, next) {
 
     if (role === 1 && Math.floor(currentStatus / 10) < 1) {
         // nastav approved by TL
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.DeniedTL +" where ut.idUserHasTraining=?;";
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.DeniedTL + " where ut.idUserHasTraining=?;";
     } else if (role === 2 && Math.floor(currentStatus / 10) < 3) {
         // nastav approved by LM
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.DeniedLM +" where ut.idUserHasTraining=?;";
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.DeniedLM + " where ut.idUserHasTraining=?;";
     } else if (role === 3 && Math.floor(currentStatus / 10) < 5) {
         // nastav approved by Director
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.DeniedDirector +" where ut.idUserHasTraining=?;";
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.DeniedDirector + " where ut.idUserHasTraining=?;";
     } else {
         return next(Error('You do not have rights / already done'));
     }
@@ -64,14 +78,14 @@ function acceptUserTraining(req, res, next) {
     console.log(role + ' ' + idUserHasTraining + " " + currentStatus);
 
     if (role === 1 && Math.floor(currentStatus / 10) < 1) {
-        // nastav approved by TL
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.AcceptedTL +" where ut.idUserHasTraining=?;";
+        // set approved by TL
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.AcceptedTL + " where ut.idUserHasTraining=?;";
     } else if (role === 2 && Math.floor(currentStatus / 10) < 3) {
-        // nastav approved by LM
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.AcceptedLM +" where ut.idUserHasTraining=?;";
+        // set approved by LM
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.AcceptedLM + " where ut.idUserHasTraining=?;";
     } else if (role === 3 && Math.floor(currentStatus / 10) < 5) {
-        // nastav approved by Director
-        var sql = "update user_has_training ut set ut.trainingStatus ="+ Approvals.AcceptedDirector +" where ut.idUserHasTraining=?;";
+        // set approved by Director
+        var sql = "update user_has_training ut set ut.trainingStatus =" + Approvals.AcceptedDirector + " where ut.idUserHasTraining=?;";
     } else {
         return next(Error('You do not have rights / already done'));
     }
@@ -90,6 +104,11 @@ function acceptUserTraining(req, res, next) {
 // needs role of the person who sings up and id of whole training
 async function bindUserWithTraining(req, res, next) {
 
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
     var idUser = await parseInt(req.body.extensionAttribute1);
     var idWholeTraining = await parseInt(req.params.id);
     var role = await req.body.role;
@@ -104,9 +123,9 @@ async function bindUserWithTraining(req, res, next) {
         var stat = 50;
     }
 
-    var values = [[idUser, idWholeTraining, stat]];
+    var values = [[idUser, idWholeTraining, stat, dateTime]];
 
-    db.query('INSERT into user_has_training ( idUser, idWholeTraining, trainingStatus ) VALUES ?', [values], (err, rows, fields) => {
+    db.query('INSERT into user_has_training ( idUser, idWholeTraining, trainingStatus, SignUpDate ) VALUES ?', [values], (err, rows, fields) => {
         if (!err) {
             res.send(rows);
         }
@@ -120,7 +139,7 @@ async function bindUserWithTraining(req, res, next) {
 // returns list of my trainings (current user id)
 function getMyTrainings(req, res, next) {
     var idCurrentUser = parseInt(req.params.id);
-    var sql = 'select ut.idUserHasTraining, t.name name, p.name provider, c.name cluster, ut.trainingStatus as status, wt.price from user_has_training ut join wholetraining wt on (ut.idWholeTraining = wt.idWholeTraining) join providers p on(wt.idProvider = p.idProvider) join clusters c on (c.idCluster = wt.idCluster ) join trainings t on (t.idTraining = wt.idTraining) where ut.idUser = ?;';
+    var sql = 'select ut.idUserHasTraining, t.name name, p.name provider, c.name cluster, ut.trainingStatus as status, wt.price, ut.SignUpDate, ut.idUser, ut.DecisionByProcurementDate, ut.AdditionalNoteProcurement, ut.AdditionalNoteUser , ut.ProcurementStatus, ut.UserStatus   from user_has_training ut join wholetraining wt on (ut.idWholeTraining = wt.idWholeTraining) join providers p on(wt.idProvider = p.idProvider) join clusters c on (c.idCluster = wt.idCluster ) join trainings t on (t.idTraining = wt.idTraining) where ut.idUser = ?;';
 
     db.query(sql, idCurrentUser, (err, rows, fields) => {
         if (!err)
@@ -131,6 +150,143 @@ function getMyTrainings(req, res, next) {
 
 }
 
+
+function acceptedProcurement(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update user_has_training ut set ut.procurementStatus =" + 1 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+function orderedProcurement(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update user_has_training ut set ut.procurementStatus =" + 10 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+function cancelledProcurement(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update user_has_training ut set ut.procurementStatus =" + 19 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+
+function participateUser(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update user_has_training ut set ut.userStatus =" + 1 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+
+function cancelUser(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update user_has_training ut set ut.userStatus =" + 19 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+
+// returns list of my trainings (current user id)
+function saveUserNote(req, res, next) {
+    var idUserHasTraining = req.body.idUserHasTraining;
+    var userNote = req.body.AdditionalNoteUser;
+
+    var sql = "update user_has_training ut set ut.AdditionalNoteUser =? where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, [userNote, idUserHasTraining], (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+}
+
+function saveProcurementNote(req, res, next) {
+    var idUserHasTraining = req.body.idUserHasTraining;
+    var userNote = req.body.AdditionalNoteProcurement;
+
+    var sql = "update user_has_training ut set ut.AdditionalNoteProcurement =? where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
+
+    db.query(sql, [userNote, idUserHasTraining], (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+}
+
+// returns my employees trainings not only direct
+async function getEveryonesTrainings(req, res, next) {
+
+    var id = await parseInt(req.params.id);
+
+    help = await config.procurement.find(function(element) {
+        return element === id.toString();
+      });
+      
+      if(help === undefined){
+        return;
+      } 
+
+
+    var query = "(&(objectClass=user)(objectCategory=person))";
+    ad.find(query, async function (err, results) {
+        if ((err) || (!results)) {
+            // console.log('ERROR: ' + JSON.stringify(err));
+            res.send(err);
+        } else {
+            const allUsers = await results.users;
+
+            var sql = "select ut.idUserHasTraining, ut.idUser, ut.TrainingStatus trainingStatus, wt.price, t.name trainingname , p.name providername, c.name clustername,  ut.SignUpDate, ut.idUser, ut.DecisionByProcurementDate, ut.AdditionalNoteProcurement, ut.AdditionalNoteUser , ut.ProcurementStatus, ut.UserStatus   from user_has_training ut join wholetraining wt on (wt.idWholeTraining = ut.idWholeTraining) join providers p on(wt.idProvider = p.idProvider) join clusters c on (c.idCluster = wt.idCluster ) join trainings t on (t.idTraining = wt.idTraining);"
+            await db.query(sql, async function (err, rows, fields) {
+                if (!err) {
+
+                    for (k = 0; k < rows.length; k++) {
+                        var id = await rows[k].idUser;
+                        console.log(allUsers.find(x => x.extensionAttribute1 === id.toString()));
+                        rows[k].nameUser = allUsers.find(x => x.extensionAttribute1 === id.toString()).displayName;
+                    }
+                    res.send(rows);
+                }
+                else
+                    console.log(err);
+            })
+        }
+    });
+}
 
 // returns my employees trainings not only direct
 async function getEmployeeTrainings(req, res, next) {
@@ -174,7 +330,7 @@ async function getEmployeeTrainings(req, res, next) {
             //   let result = results.users.map(({ extensionAttribute1 }) => extensionAttribute1)
             // res.send(EveryonesId);
 
-            var sql = "select ut.idUserHasTraining, ut.idUser, ut.TrainingStatus trainingStatus, wt.price, t.name trainingname , p.name providername, c.name clustername  from user_has_training ut join wholetraining wt on (wt.idWholeTraining = ut.idWholeTraining) join providers p on(wt.idProvider = p.idProvider) join clusters c on (c.idCluster = wt.idCluster ) join trainings t on (t.idTraining = wt.idTraining) where ut.idUser IN (?);"
+            var sql = "select ut.idUserHasTraining, ut.idUser, ut.TrainingStatus trainingStatus, wt.price, t.name trainingname , p.name providername, c.name clustername,  ut.SignUpDate, ut.idUser, ut.DecisionByProcurementDate, ut.AdditionalNoteProcurement, ut.AdditionalNoteUser , ut.ProcurementStatus, ut.UserStatus   from user_has_training ut join wholetraining wt on (wt.idWholeTraining = ut.idWholeTraining) join providers p on(wt.idProvider = p.idProvider) join clusters c on (c.idCluster = wt.idCluster ) join trainings t on (t.idTraining = wt.idTraining) where ut.idUser IN (?);"
             await db.query(sql, [EveryonesId], async function (err, rows, fields) {
                 if (!err) {
                     // console.log(allUsers);
@@ -275,13 +431,19 @@ function getTrainings(req, res, next) {
 
 // each whole training has composite unique key(cluster, provider, training)
 function saveWholeTraining(req, res, next) {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
     var price = req.body.price;
     var idCluster = req.body.cluster.idCluster;
     var idProvider = req.body.provider.idProvider;
     var idTraining = req.body.training.idTraining;
-    var values1 = [[idProvider, idTraining, idCluster, price]];
+    var values1 = [[idProvider, idTraining, idCluster, price, dateTime]];
 
-    var sql1 = "INSERT INTO WholeTraining(idProvider,idTraining, idCluster, Price) VALUES(?)";
+    var sql1 = "INSERT INTO WholeTraining(idProvider,idTraining, idCluster, Price, CreationTime  ) VALUES(?)";
     db.query(sql1, values1, (err, rows, fields) => {
         if (!err) {
             res.send(rows);
@@ -294,7 +456,7 @@ function saveWholeTraining(req, res, next) {
 
 // requires also user id to determine which of the training are mine 
 function getAllWholeTrainings(req, res, next) {
-    var sql = 'select idWholeTraining, case when wt.idWholeTraining in (select idWholeTraining from user_has_training where idUser = ? )  then 1 else 0 end as isMy, wt.idTraining, t.name, c.name as clustername, wt.Price as price, p.name as providername, wt.idProvider, wt.idCluster from WholeTraining wt join providers p on (p.idProvider = wt.idProvider) join trainings t on (t.idTraining = wt.idTraining) join clusters c on (c.idCluster = wt.idCluster);';
+    var sql = 'select wt.idWholeTraining, wt.Active , wt.CreationTime, case when wt.idWholeTraining in (select idWholeTraining from user_has_training where idUser = ? )  then 1 else 0 end as isMy, wt.idTraining, t.name, c.name as clustername, wt.Price as price, p.name as providername, wt.idProvider, wt.idCluster from WholeTraining wt join providers p on (p.idProvider = wt.idProvider) join trainings t on (t.idTraining = wt.idTraining) join clusters c on (c.idCluster = wt.idCluster);';
     var idCurrentUser = parseInt(req.params.id);
 
     db.query(sql, idCurrentUser, (err, rows, fields) => {
@@ -306,6 +468,46 @@ function getAllWholeTrainings(req, res, next) {
 
 }
 
+// requires also user id to determine which of the training are mine 
+function getActiveWholeTrainings(req, res, next) {
+    var sql = 'select wt.idWholeTraining, wt.Active , wt.CreationTime, case when wt.idWholeTraining in (select idWholeTraining from user_has_training where idUser = ? )  then 1 else 0 end as isMy, wt.idTraining, t.name, c.name as clustername, wt.Price as price, p.name as providername, wt.idProvider, wt.idCluster from WholeTraining wt join providers p on (p.idProvider = wt.idProvider) join trainings t on (t.idTraining = wt.idTraining) join clusters c on (c.idCluster = wt.idCluster) where wt.Active = 1;';
+    var idCurrentUser = parseInt(req.params.id);
+
+    db.query(sql, idCurrentUser, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+
+function disableWholeTraining(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update WholeTraining wt set wt.active = 0 where wt.idWholeTraining=?;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
+
+function enableWholeTraining(req, res, next) {
+    var idUserHasTraining = parseInt(req.params.id);
+    var sql = "update WholeTraining wt set wt.active = 1 where wt.idWholeTraining=?;";
+
+    db.query(sql, idUserHasTraining, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+
+}
 /*
 function getTrainingById(req, res, next) {
     const currentTraining = req.training;

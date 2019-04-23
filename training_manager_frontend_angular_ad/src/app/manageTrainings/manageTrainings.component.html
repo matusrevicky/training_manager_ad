@@ -64,10 +64,11 @@
         <label for="sel1">Items per page</label>
         <select class="form-control" id="sel1">
           <option (click)="onChangePageSize(10)" value="10">10</option>
-          <option (click)="onChangePageSize(25)" selected="selected" value="25">25</option>
+          <option (click)="onChangePageSize(25)"  value="25">25</option>
           <option (click)="onChangePageSize(50)" value="50">50</option>
           <option (click)="onChangePageSize(100)" value="100">100</option>
           <option (click)="onChangePageSize(500)" value="500">500</option>
+          <option (click)="onChangePageSize(1000)" selected="selected" value="1000">1000</option>
         </select>
       </div>
 
@@ -80,7 +81,7 @@
 
   <!-- Training Name Column -->
   <ng-container cdkColumnDef="name">
-    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('name')">
+    <th  cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('name')">
       Training Name <span *ngIf="sortKey$.value === 'name'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
     </th>
     <td cdk-cell *cdkCellDef="let row"> {{row.name}} </td>
@@ -108,6 +109,30 @@
       Price <span *ngIf="sortKey$.value === 'price'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
     </th>
     <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
+  </ng-container>
+
+ <!-- active  -->
+ <ng-container cdkColumnDef="Active">
+  <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('Active')">
+    Active <span *ngIf="sortKey$.value === 'Active'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+  </th>
+  <td cdk-cell *cdkCellDef="let row"> {{row.Active}} </td>
+</ng-container>
+
+   <!-- disable -->
+   <ng-container cdkColumnDef="disableWholeTraining">
+    <th cdk-header-cell *cdkHeaderCellDef></th>
+    <td cdk-cell *cdkCellDef="let row">
+      <button *ngIf="row.Active === 1" class="btn btn-primary" (click)="disableWholeTraining(row)">Disable</button>
+    </td>
+  </ng-container>
+
+   <!-- enable -->
+   <ng-container cdkColumnDef="enableWholeTraining">
+    <th cdk-header-cell *cdkHeaderCellDef></th>
+    <td cdk-cell *cdkCellDef="let row">
+      <button *ngIf="row.Active === 0" class="btn btn-primary" (click)="enableWholeTraining(row)">Enable</button>
+    </td>
   </ng-container>
 
   <!-- Header and Row Declarations -->

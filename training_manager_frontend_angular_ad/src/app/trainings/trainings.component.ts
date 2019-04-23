@@ -23,12 +23,15 @@ export class TrainingsComponent implements OnInit {
 
     superlatives$ = new BehaviorSubject<{ [superlativeName: string]: string }>({});
     tableDataSource$ = new BehaviorSubject<any[]>([]);
-    displayedColumns$ = new BehaviorSubject<string[]>([
+    displayedColumns$ = new BehaviorSubject<string[]>([ 
+        'idWholeTraining',
         'name',
         'clustername',
         'providername',
         'price',
-        'onSubmit'
+        'CreationTime',
+        'isMy',
+        'onSubmit',
     ]);
     currentPage$ = new BehaviorSubject<number>(1);
     pageSize$ = new BehaviorSubject<number>(1000);
@@ -57,18 +60,7 @@ export class TrainingsComponent implements OnInit {
         // console.log(this.tra$);
         this.trainings$.subscribe(changedHeroData => {
             const superlatives = {
-                'highest-attack': null,
-                'lowest-attack': null,
-                'highest-defense': null,
-                'lowest-defense': null,
-                'highest-speed': null,
-                'lowest-speed': null,
-                'highest-healing': null,
-                'lowest-healing': null,
-                'highest-recovery': null,
-                'lowest-recovery': null,
-                'highest-health': null,
-                'lowest-health': null
+                
             };
 
             Object.values(changedHeroData).forEach(hero => {
@@ -150,7 +142,7 @@ export class TrainingsComponent implements OnInit {
 
     getAllTrainings() {
 
-        this.trainigService.getAllTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
+        this.trainigService.getActiveTrainings(this.currentUser.extensionAttribute1).pipe(first()).subscribe(tr => {
             this.trainings$.next(tr);
         });
 
@@ -168,13 +160,18 @@ export class TrainingsComponent implements OnInit {
         });;
     }
 
+
+    
+
     // export to excel  // https://stackblitz.com/edit/angular6-export-xlsx?file=src%2Fapp%2Fapp.module.ts
     exportAsXLSX():void {
         
         this.trainings$.subscribe(changedTrainingData => {
            this.trainings = changedTrainingData;
+           this.excelService.exportAsExcelFile(this.trainings, 'trainings');
             });
-        this.excelService.exportAsExcelFile(this.trainings, 'sample');
+       
       }
+
    
 }
