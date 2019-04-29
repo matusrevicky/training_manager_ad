@@ -1,43 +1,73 @@
-<h1 class="display-3">Trainings</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
 
+      <h1 class="display-3">Manage Trainings</h1>
 
-<form (ngSubmit)="onWholeTrainigSubmit()" #myForm="ngForm">
-
-
-  <label>Price</label>
-  <input class="form-control" type="number" [(ngModel)]="wholeTraining.price" name="userPrice" required #menoModel="ngModel">
-
-
-  <div class="form-group">
-    <label for="exampleFormControlSelect1">Clusters</label>
-    <select class="form-control" [(ngModel)]="wholeTraining.cluster" name="userCluster" >
      
-        <option *ngFor="let ws of clusters" [ngValue]="ws" >{{ws.name}}</option>
-      
-    </select>
-  </div>
 
-  <div class="form-group">
-      <label for="exampleFormControlSelect2">Providers</label>
-      <select class="form-control" [(ngModel)]="wholeTraining.provider" name="userProvider">
-       
-          <option *ngFor="let ws of providers" [ngValue]="ws" >{{ws.name}}</option>
-        
-      </select>
-    </div>
- 
-    <div class="form-group">
-        <label for="exampleFormControlSelect2">Training Name</label>
-        <select class="form-control" [(ngModel)]="wholeTraining.training" name="userTraining">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#trainingModal"
+        (click)="addTrainingButtonClicked()">
+        Add training
+      </button>
+
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#providerModal"
+        (click)="addProviderButtonClicked()">
+        Add Provider
+      </button>
+
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clusterModal"
+        (click)="addClusterButtonClicked()">
+        Add Cluster
+      </button>
+
+
+
+      <form (ngSubmit)="onWholeTrainigSubmit()" #myForm="ngForm">
          
-            <option *ngFor="let ws of trainings" [ngValue]="ws" >{{ws.name}}</option>
-          
-        </select>
-      </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input class="form-control" type="number" [(ngModel)]="wholeTraining.price" name="userPrice" required
+            #menoModel="ngModel">
+        
 
- 
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+       
+          <label for="exampleFormControlSelect1">Clusters</label>
+          <select class="form-control" [(ngModel)]="wholeTraining.cluster" name="userCluster" required #menoModel="ngModel" >
+
+            <option *ngFor="let ws of clusters" [ngValue]="ws">{{ws.name}}</option>
+
+          </select>
+        
+
+        
+          <label for="exampleFormControlSelect2">Providers</label>
+          <select class="form-control" [(ngModel)]="wholeTraining.provider" name="userProvider" required #menoModel="ngModel">
+
+            <option *ngFor="let ws of providers" [ngValue]="ws">{{ws.name}}</option>
+
+          </select>
+      
+
+
+        
+          <label for="exampleFormControlSelect2">Training Name</label>
+          <select class="form-control" [(ngModel)]="wholeTraining.training" name="userTraining" required #menoModel="ngModel">
+            <option *ngFor="let ws of trainings" [ngValue]="ws">{{ws.name}}</option>
+          </select>
+
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Add Whole Training</button>
+        <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+        
+      </form>
+
+    </div>
+  </div>
+</div>
 
 <div class="row">
   <div class="col-6">
@@ -64,7 +94,7 @@
         <label for="sel1">Items per page</label>
         <select class="form-control" id="sel1">
           <option (click)="onChangePageSize(10)" value="10">10</option>
-          <option (click)="onChangePageSize(25)"  value="25">25</option>
+          <option (click)="onChangePageSize(25)" value="25">25</option>
           <option (click)="onChangePageSize(50)" value="50">50</option>
           <option (click)="onChangePageSize(100)" value="100">100</option>
           <option (click)="onChangePageSize(500)" value="500">500</option>
@@ -81,7 +111,7 @@
 
   <!-- Training Name Column -->
   <ng-container cdkColumnDef="name">
-    <th  cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('name')">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('name')">
       Training Name <span *ngIf="sortKey$.value === 'name'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
     </th>
     <td cdk-cell *cdkCellDef="let row"> {{row.name}} </td>
@@ -111,24 +141,32 @@
     <td cdk-cell *cdkCellDef="let row"> {{row.price}} </td>
   </ng-container>
 
- <!-- active  -->
- <ng-container cdkColumnDef="Active">
-  <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('Active')">
-    Active <span *ngIf="sortKey$.value === 'Active'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
-  </th>
-  <td cdk-cell *cdkCellDef="let row"> {{row.Active}} </td>
-</ng-container>
+  <!-- active  -->
+  <ng-container cdkColumnDef="Active">
+    <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('Active')">
+      Active <span *ngIf="sortKey$.value === 'Active'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+    </th>
+    <td cdk-cell *cdkCellDef="let row"> {{row.Active}} </td>
+  </ng-container>
 
-   <!-- disable -->
-   <ng-container cdkColumnDef="disableWholeTraining">
+  <!-- active  -->
+  <ng-container cdkColumnDef="CreationTime">
+      <th cdk-header-cell *cdkHeaderCellDef (click)="adjustSort('CreationTime')">
+          Creation Time <span *ngIf="sortKey$.value === 'CreationTime'">{{ sortDirection$.value === 'asc' ? '↥' : '↧' }}</span>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"> {{row.CreationTime}} </td>
+    </ng-container>
+
+  <!-- disable -->
+  <ng-container cdkColumnDef="disableWholeTraining">
     <th cdk-header-cell *cdkHeaderCellDef></th>
     <td cdk-cell *cdkCellDef="let row">
       <button *ngIf="row.Active === 1" class="btn btn-primary" (click)="disableWholeTraining(row)">Disable</button>
     </td>
   </ng-container>
 
-   <!-- enable -->
-   <ng-container cdkColumnDef="enableWholeTraining">
+  <!-- enable -->
+  <ng-container cdkColumnDef="enableWholeTraining">
     <th cdk-header-cell *cdkHeaderCellDef></th>
     <td cdk-cell *cdkCellDef="let row">
       <button *ngIf="row.Active === 0" class="btn btn-primary" (click)="enableWholeTraining(row)">Enable</button>
@@ -141,20 +179,7 @@
 
 </table>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#trainingModal"
-  (click)="addTrainingButtonClicked()">
-  Add training
-</button>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#providerModal"
-  (click)="addProviderButtonClicked()">
-  Add Provider
-</button>
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clusterModal"
-  (click)="addClusterButtonClicked()">
-  Add Cluster
-</button>
 
 <app-training-modal (savedTraining)="editedTrainingSaved($event)" [training]="editedTraining"
   [actionWithTraining]="action"></app-training-modal>
@@ -164,3 +189,5 @@
 
 <app-cluster-modal (savedTraining)="editedClusterSaved($event)" [training]="editedTraining"
   [actionWithTraining]="action"></app-cluster-modal>
+
+  

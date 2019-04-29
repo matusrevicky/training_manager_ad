@@ -11,6 +11,8 @@ import { take } from 'rxjs/operators';
 
 import { FormControl } from '@angular/forms';
 
+import { ExcelService } from '../_services/excel.service';
+
 declare var $: any;
 
 @Component({ templateUrl: 'myEmployeesTrainings.component.html' })
@@ -49,7 +51,7 @@ export class MyEmployeesTrainingsComponent implements OnInit {
     sortDirection$ = new BehaviorSubject<string>('asc');
 
 
-    //  trainings: Training[] = [];
+      trainings: Training[] = [];
 
     private training: Training;
     private selected: Training;
@@ -57,7 +59,7 @@ export class MyEmployeesTrainingsComponent implements OnInit {
     private saved: boolean;
 
 
-    constructor(private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
+    constructor(private excelService: ExcelService, private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
 
     ngOnInit() {
 
@@ -68,18 +70,7 @@ export class MyEmployeesTrainingsComponent implements OnInit {
         // console.log(this.tra$);
         this.trainings$.subscribe(changedHeroData => {
             const superlatives = {
-                'highest-attack': null,
-                'lowest-attack': null,
-                'highest-defense': null,
-                'lowest-defense': null,
-                'highest-speed': null,
-                'lowest-speed': null,
-                'highest-healing': null,
-                'lowest-healing': null,
-                'highest-recovery': null,
-                'lowest-recovery': null,
-                'highest-health': null,
-                'lowest-health': null
+             
             };
 
             Object.values(changedHeroData).forEach(hero => {
@@ -187,6 +178,16 @@ export class MyEmployeesTrainingsComponent implements OnInit {
     onChangePageSize(value) {
         this.pageSize$.next(value);
       }
+
+      // export to excel  // https://stackblitz.com/edit/angular6-export-xlsx?file=src%2Fapp%2Fapp.module.ts
+    exportAsXLSX(): void {
+
+        this.trainings$.subscribe(changedTrainingData => {
+            this.trainings = changedTrainingData;
+            this.excelService.exportAsExcelFile(this.trainings, 'My trainings');
+        });
+
+    }
 
 }
 

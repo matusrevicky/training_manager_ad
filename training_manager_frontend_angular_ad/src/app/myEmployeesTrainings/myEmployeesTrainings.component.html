@@ -12,6 +12,7 @@
               <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
                 x
               </button>
+              <button  class="btn btn-primary" (click)="exportAsXLSX()">Export to excel</button>
             </div>
           </div>
         </div>
@@ -157,7 +158,7 @@
   <ng-container cdkColumnDef="onApprove">
     <th cdk-header-cell *cdkHeaderCellDef></th>
     <td cdk-cell *cdkCellDef="let row">
-      <button  class="btn btn-success" (click)="onApprove(row)">approve</button>
+      <button *ngIf="(currentUser.role === 3 && (row.trainingStatus / 10) < 5) || (currentUser.role === 2 && (row.trainingStatus / 10) < 3) || (currentUser.role === 1 && (row.trainingStatus / 10) < 1)" class="btn btn-success" (click)="onApprove(row)">approve</button>
     </td>
   </ng-container>
 
@@ -165,7 +166,7 @@
     <ng-container cdkColumnDef="onDeny">
       <th cdk-header-cell *cdkHeaderCellDef></th>
       <td cdk-cell *cdkCellDef="let row">
-        <button  class="btn btn-danger" (click)="onDeny(row)">Deny</button>
+        <button  *ngIf="(currentUser.role === 3 && (row.trainingStatus / 10) < 5) || (currentUser.role === 2 && (row.trainingStatus / 10) < 3) || (currentUser.role === 1 && (row.trainingStatus / 10) < 1)" class="btn btn-danger" (click)="onDeny(row)">Deny</button>
       </td>
     </ng-container>
   

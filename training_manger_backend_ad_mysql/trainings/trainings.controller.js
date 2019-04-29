@@ -148,10 +148,18 @@ function getMyTrainings(req, res, next) {
             console.log(err);
     })
 
+    
+
 }
 
 
 function acceptedProcurement(req, res, next) {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
     var idUserHasTraining = parseInt(req.params.id);
     var sql = "update user_has_training ut set ut.procurementStatus =" + 1 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
 
@@ -160,11 +168,24 @@ function acceptedProcurement(req, res, next) {
             res.send(rows);
         else
             console.log(err);
-    })
+    });
+
+    db.query("update user_has_training ut set ut.decisionByProcurementDate ='" + dateTime + "' where ut.idUserHasTraining=? and ut.TrainingStatus=50;", idUserHasTraining, (err, rows, fields) => {
+        if (!err){}
+          //  res.send(rows);
+        else
+            console.log(err);
+    });
 
 }
 
 function orderedProcurement(req, res, next) {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
     var idUserHasTraining = parseInt(req.params.id);
     var sql = "update user_has_training ut set ut.procurementStatus =" + 10 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
 
@@ -173,11 +194,24 @@ function orderedProcurement(req, res, next) {
             res.send(rows);
         else
             console.log(err);
-    })
+    });
+
+    db.query("update user_has_training ut set ut.decisionByProcurementDate ='" + dateTime + "' where ut.idUserHasTraining=? and ut.TrainingStatus=50;", idUserHasTraining, (err, rows, fields) => {
+        if (!err){}
+          //  res.send(rows);
+        else
+            console.log(err);
+    });
 
 }
 
 function cancelledProcurement(req, res, next) {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
     var idUserHasTraining = parseInt(req.params.id);
     var sql = "update user_has_training ut set ut.procurementStatus =" + 19 + " where ut.idUserHasTraining=? and ut.TrainingStatus=50;";
 
@@ -186,7 +220,14 @@ function cancelledProcurement(req, res, next) {
             res.send(rows);
         else
             console.log(err);
-    })
+    });
+
+    db.query("update user_has_training ut set ut.decisionByProcurementDate ='" + dateTime + "' where ut.idUserHasTraining=? and ut.TrainingStatus=50;", idUserHasTraining, (err, rows, fields) => {
+        if (!err){}
+          //  res.send(rows);
+        else
+            console.log(err);
+    });
 
 }
 
@@ -449,6 +490,7 @@ function saveWholeTraining(req, res, next) {
             res.send(rows);
         }
         else {
+         next(Error(err));
             console.log(err);
         }
     });

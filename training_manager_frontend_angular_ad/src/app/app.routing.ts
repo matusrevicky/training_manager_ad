@@ -22,7 +22,7 @@ const appRoutes: Routes = [
         path: 'admin',
         component: AdminComponent,
         canActivate: [AuthGuard],
-       // data: { roles: [Role.Admin] }
+        //data: { roles: [Role.Admin] }
     },
     {
         path: 'trainings',
@@ -34,6 +34,7 @@ const appRoutes: Routes = [
         path: 'manageTrainings',
         component: ManageTrainingsComponent,
         canActivate: [AuthGuard],
+        data: { roles: [1] }
        
     },
     {

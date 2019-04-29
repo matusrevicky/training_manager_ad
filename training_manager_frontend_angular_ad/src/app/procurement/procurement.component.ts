@@ -5,7 +5,7 @@ import { User } from '@/_models';
 import { UserService, AuthenticationService } from '@/_services';
 import { Training } from '@/_models/training';
 import { TrainingService } from '@/_services/training.service';
-
+import { ExcelService } from '../_services/excel.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -51,7 +51,7 @@ export class Procurement implements OnInit {
     sortDirection$ = new BehaviorSubject<string>('asc');
 
 
-    //  trainings: Training[] = [];
+      trainings: Training[] = [];
 
     private training: Training;
     private selected: Training;
@@ -59,7 +59,7 @@ export class Procurement implements OnInit {
     private saved: boolean;
 
 
-    constructor(private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
+    constructor(private excelService: ExcelService, private userService: UserService, private trainigService: TrainingService, private authenticationService: AuthenticationService) { this.currentUser = this.authenticationService.currentUserValue; }
 
     ngOnInit() {
 
@@ -218,6 +218,16 @@ export class Procurement implements OnInit {
 
     //////////////////////////// note end ////////////////////////////////
 
+
+    // export to excel  // https://stackblitz.com/edit/angular6-export-xlsx?file=src%2Fapp%2Fapp.module.ts
+    exportAsXLSX(): void {
+
+        this.trainings$.subscribe(changedTrainingData => {
+            this.trainings = changedTrainingData;
+            this.excelService.exportAsExcelFile(this.trainings, 'Procurement');
+        });
+
+    }
 }
 
 

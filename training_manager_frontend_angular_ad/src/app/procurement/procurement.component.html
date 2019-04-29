@@ -10,6 +10,7 @@
               <button class="btn btn-outline-secondary" (click)="searchFormControl.setValue('')">
                 x
               </button>
+              <button  class="btn btn-primary" (click)="exportAsXLSX()">Export to excel</button>
             </div>
           </div>
         </div>
@@ -155,7 +156,7 @@
   <ng-container cdkColumnDef="noteUser">
     <th cdk-header-cell *cdkHeaderCellDef></th>
     <td cdk-cell *cdkCellDef="let row">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notePModal"
+        <button *ngIf="row.trainingStatus === 50" type="button" class="btn btn-primary" data-toggle="modal" data-target="#notePModal"
         (click)="editNoteClicked(row)">
         Add note
       </button>
@@ -166,7 +167,7 @@
    <ng-container cdkColumnDef="acceptedProcurement">
       <th cdk-header-cell *cdkHeaderCellDef></th>
       <td cdk-cell *cdkCellDef="let row">
-        <button class="btn btn-primary" (click)="acceptedProcurement(row)">Accepted!!!</button>
+        <button *ngIf="row.trainingStatus === 50" class="btn btn-primary" (click)="acceptedProcurement(row)">Accepted!!!</button>
       </td>
     </ng-container>
      <!-- cancel Column -->
@@ -174,7 +175,7 @@
    <ng-container cdkColumnDef="orderedProcurement">
       <th cdk-header-cell *cdkHeaderCellDef></th>
       <td cdk-cell *cdkCellDef="let row">
-        <button class="btn btn-primary" (click)="orderedProcurement(row)">Ordered!!!</button>
+        <button *ngIf="row.trainingStatus === 50" class="btn btn-primary" (click)="orderedProcurement(row)">Ordered!!!</button>
       </td>
     </ng-container>
      <!-- cancel Column -->
@@ -182,7 +183,7 @@
    <ng-container cdkColumnDef="cancelledProcurement">
       <th cdk-header-cell *cdkHeaderCellDef></th>
       <td cdk-cell *cdkCellDef="let row">
-        <button class="btn btn-primary" (click)="cancelledProcurement(row)">Cancel!!!</button>
+        <button *ngIf="row.trainingStatus === 50" class="btn btn-primary" (click)="cancelledProcurement(row)">Cancel!!!</button>
       </td>
     </ng-container>
 

@@ -17,7 +17,7 @@ import { wholeTraining } from '@/_models/wholeTraining';
 
 declare var $: any;
 
-@Component({ templateUrl: 'manageTrainings.component.html' })
+@Component({ templateUrl: 'manageTrainings.component.html', styleUrls: ['./manageTrainings.component.css'] })
 export class ManageTrainingsComponent implements OnInit {
 
 
@@ -32,16 +32,18 @@ export class ManageTrainingsComponent implements OnInit {
     'clustername',
     'providername',
     'price',
+    'CreationTime',
     'disableWholeTraining',
     'enableWholeTraining'
+    
 
   ]);
   currentPage$ = new BehaviorSubject<number>(1);
   pageSize$ = new BehaviorSubject<number>(10000);
   dataOnPage$ = new BehaviorSubject<any[]>([]);
   searchFormControl = new FormControl();
-  sortKey$ = new BehaviorSubject<string>('name');
-  sortDirection$ = new BehaviorSubject<string>('asc');
+  sortKey$ = new BehaviorSubject<string>('CreationTime');
+  sortDirection$ = new BehaviorSubject<string>('desc');
 
 
   //  trainings: Training[] = [];
@@ -76,16 +78,16 @@ export class ManageTrainingsComponent implements OnInit {
 
       Object.values(changedHeroData).forEach(hero => {
         Object.keys(hero).forEach(key => {
-          if (key === 'name' || key === 'types') { return; }
+          if (key === 'CreationTime' || key === 'types') { return; }
 
           const highest = `highest-${key}`;
           if (!superlatives[highest] || hero[key] > changedHeroData[superlatives[highest]][key]) {
-            superlatives[highest] = hero.name;
+            superlatives[highest] = hero.CreationTime;
           }
 
           const lowest = `lowest-${key}`;
           if (!superlatives[lowest] || hero[key] < changedHeroData[superlatives[lowest]][key]) {
-            superlatives[lowest] = hero.name;
+            superlatives[lowest] = hero.CreationTime;
           }
         });
       });
@@ -166,6 +168,11 @@ export class ManageTrainingsComponent implements OnInit {
       this.getAllTrainings();
       this.saved = true;
       setTimeout(_ => this.saved = false, 5000);
+      this.error = '';
+    },
+    error => {
+        this.error = error;
+        this.loading = false;
     });;
   }
 
@@ -308,5 +315,11 @@ export class ManageTrainingsComponent implements OnInit {
     });;
   }
   //////////////////////////// clusters end ////////////////////////////////
+
+
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error = '';
 
 }

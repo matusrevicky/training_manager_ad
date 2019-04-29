@@ -1,25 +1,33 @@
-﻿<h1>Home</h1>
-<p>You're logged in with Angular 7 & JWT!!</p>
-<p>Your role is: <strong>{{currentUser.role}}</strong>.</p>
-<p>Procurement access is: <strong>{{currentUser.procurement}}</strong>.</p>
-<p>This page can be accessed by all authenticated users.</p>
-<div>
-    Current user from secure api end point:
-    <ul>
-        <li ><b>dn:</b>  {{userFromApi.dn}}</li>
-        <li ><b>distinguishedName: </b> {{userFromApi.distinguishedName}}</li>
-        <li ><b>sAMAccountName: </b> {{userFromApi.sAMAccountName}}</li>
-        <li ><b>whenCreated: </b> {{userFromApi.whenCreated}}</li>
-        <li ><b>pwdLastSet: </b> {{userFromApi.pwdLastSet}}</li>
-        <li ><b>userAccountControl: </b> {{userFromApi.userAccountControl}}</li>
-        <li ><b>employeeID: </b> {{userFromApi.employeeID}}</li>
-        <li ><b>sn: </b> {{userFromApi.sn}}</li>
-        <li ><b>givenName: </b> {{userFromApi.givenName}}</li>
-        <li ><b>cn: </b> {{userFromApi.cn}}</li>
-        <li ><b>displayName: </b> {{userFromApi.displayName}}</li>
-        <li ><b>description: </b>{{userFromApi.description}}</li>
-        <li ><b>manager: </b> {{userFromApi.manager}}</li>
-        <li ><b>sap ID: </b> {{userFromApi.extensionAttribute1}}</li>
-        <li ><b>Cost centrum: </b> {{userFromApi.extensionAttribute2}}</li>
-    </ul>
+﻿<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+
+            <h1>Home</h1>
+            <p>You're logged in with Angular 7 & JWT!!</p>
+            <p>Your role is: <strong>{{currentUser.role}}</strong>.</p>
+            <p>Procurement access is: <strong>{{currentUser.procurement}}</strong>.</p>
+            <p>This page can be accessed by all authenticated users.</p>
+            <div>
+                Current user from secure api end point:
+                <ul>
+                    <li><b>dn:</b> {{userFromApi.dn}}</li>
+                    <li><b>distinguishedName: </b> {{userFromApi.distinguishedName}}</li>
+                    <li><b>sAMAccountName: </b> {{userFromApi.sAMAccountName}}</li>
+                    <li><b>whenCreated: </b> {{userFromApi.whenCreated}}</li>
+                    <li><b>pwdLastSet: </b> {{userFromApi.pwdLastSet}}</li>
+                    <li><b>userAccountControl: </b> {{userFromApi.userAccountControl}}</li>
+                    <li><b>employeeID: </b> {{userFromApi.employeeID}}</li>
+                    <li><b>sn: </b> {{userFromApi.sn}}</li>
+                    <li><b>givenName: </b> {{userFromApi.givenName}}</li>
+                    <li><b>cn: </b> {{userFromApi.cn}}</li>
+                    <li><b>displayName: </b> {{userFromApi.displayName}}</li>
+                    <li><b>description: </b>{{userFromApi.description}}</li>
+                    <li><b>manager: </b> {{userFromApi.manager}}</li>
+                    <li><b>sap ID: </b> {{userFromApi.extensionAttribute1}}</li>
+                    <li><b>Cost centrum: </b> {{userFromApi.extensionAttribute2}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
